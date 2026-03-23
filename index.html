@@ -104,6 +104,12 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
 .export-block textarea{font-family:'Courier New',monospace;font-size:12px;min-height:200px;background:var(--bg)}
 .char-count{font-size:11px;color:var(--text-dim);text-align:right;margin-top:4px}
 
+/* === STUDIO TAB BAR === */
+.studio-tabs{display:flex;gap:2px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface)}
+.studio-tab{padding:8px 18px;border-radius:8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.studio-tab:hover{background:var(--surface2);color:var(--text)}
+.studio-tab.active{background:var(--accent);color:#fff}
+
 /* === COMING SOON PLACEHOLDER === */
 .coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
 .coming-soon-icon{font-size:56px;margin-bottom:20px;opacity:.4}
@@ -138,6 +144,13 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
 
 <!-- ==================== PITCH STUDIO ==================== -->
 <div class="studio-panel active" id="panelPitch">
+  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+  <div class="studio-tabs">
+    <button class="studio-tab active" onclick="switchStudio('pitch')">Pitch Studio</button>
+    <button class="studio-tab" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab" onclick="switchStudio('submission')">Submission Studio</button>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden">
   <div class="sidebar">
     <div class="sidebar-header"><h2>Pitch Studio</h2><p>Your recruiting pitch library</p></div>
     <div class="sidebar-actions">
@@ -201,10 +214,18 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       </div></div>
     </div>
   </div></div>
-</div>
+</div><!-- end flex row -->
+</div><!-- end flex col -->
+</div><!-- end panelPitch -->
 
 <!-- ==================== CV STUDIO ==================== -->
 <div class="studio-panel" id="panelCv">
+  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+  <div class="studio-tabs">
+    <button class="studio-tab" onclick="switchStudio('pitch')">Pitch Studio</button>
+    <button class="studio-tab active" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab" onclick="switchStudio('submission')">Submission Studio</button>
+  </div>
   <div class="main" style="flex:1">
     <div class="coming-soon">
       <div class="coming-soon-icon">&#128196;</div>
@@ -212,16 +233,24 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       <p>Upload candidate CVs (PDF or Word), strip contact info, add the Tandym logo, and export clean branded PDFs. Coming soon.</p>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ==================== SUBMISSION STUDIO ==================== -->
 <div class="studio-panel" id="panelSubmission">
+  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+  <div class="studio-tabs">
+    <button class="studio-tab" onclick="switchStudio('pitch')">Pitch Studio</button>
+    <button class="studio-tab" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab active" onclick="switchStudio('submission')">Submission Studio</button>
+  </div>
   <div class="main" style="flex:1">
     <div class="coming-soon">
       <div class="coming-soon-icon">&#9997;</div>
       <h3>Submission Studio</h3>
       <p>Turn intake call notes and candidate CVs into polished internal submissions. Coming soon.</p>
     </div>
+  </div>
   </div>
 </div>
 
@@ -343,6 +372,18 @@ function renderParsedPreview(){
   document.getElementById('parsedPreview').classList.remove('hidden');
 }
 
+/* ===== AUTO TITLE GENERATOR ===== */
+function generatePitchTitle(){
+  const now=new Date();
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr=months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+  const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  const todayEnd=todayStart+86400000;
+  const todayCount=pitches.filter(p=>p.created>=todayStart&&p.created<todayEnd).length;
+  if(todayCount===0)return 'Pitch \u2013 '+dateStr;
+  return 'Pitch \u2013 '+dateStr+' (#'+(todayCount+1)+')';
+}
+
 /* ===== SAVE FROM PASTE ===== */
 function saveFromPaste(){
   const raw=document.getElementById('pasteBox').value.trim();
@@ -356,12 +397,13 @@ function saveFromPaste(){
   if(compMatch&&compMatch[1].trim().length<60)company=compMatch[1].trim();
 
   const fullBody=raw;
+  const title=generatePitchTitle();
 
   if(editingPitchId){
     const i=pitches.findIndex(p=>p.id===editingPitchId);
-    if(i>=0){pitches[i]={...pitches[i],subject:d.subject,role,company,body:fullBody,signature:d.signature,greeting:d.greeting,signoff:d.signoff,updated:Date.now()};currentPitchId=editingPitchId}
+    if(i>=0){pitches[i]={...pitches[i],subject:pitches[i].subject,role,company,body:fullBody,signature:d.signature,greeting:d.greeting,signoff:d.signoff,updated:Date.now()};currentPitchId=editingPitchId}
   }else{
-    const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:d.subject||'Untitled Pitch',role,company,tags:[],body:fullBody,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'',created:Date.now(),updated:Date.now()};
+    const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:title,role,company,tags:[],body:fullBody,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'',created:Date.now(),updated:Date.now()};
     pitches.push(p);currentPitchId=p.id;
   }
   save();viewPitch(currentPitchId);
@@ -406,9 +448,8 @@ function handleFileUpload(event){
       let text=e.target.result;
       if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
       const d=parsePitchEmail(text);
-      let subject=d.subject;
-      if(!subject){const fname=file.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ');if(fname.length>3&&fname.length<100)subject=fname}
-      pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject||'Untitled',role:'',company:'',tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
+      const subject=generatePitchTitle();
+      pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject,role:'',company:'',tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
       results.push(file.name);processed++;
       if(processed===files.length){save();const rl=document.getElementById('uploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('uploadResults').classList.remove('hidden')}toast(processed+' file'+(processed!==1?'s':'')+' uploaded!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
     };reader.readAsText(file)});
