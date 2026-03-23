@@ -179,9 +179,9 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       <div class="main-body">
         <div class="paste-area">
           <div class="form-group"><label>Paste your full pitch email below</label>
-            <textarea class="large" id="pasteBox" placeholder="Paste the entire email here — subject line, body, signature, everything. The AI will parse it automatically." oninput="smartParse()"></textarea>
+            <textarea class="large" id="pasteBox" placeholder="Paste the entire email here â subject line, body, signature, everything. The AI will parse it automatically." oninput="smartParse()"></textarea>
           </div>
-          <p class="paste-hint">Just paste the whole email. Pitch Studio will detect the subject line, greeting, body, sign-off, and signature automatically.</p>
+          <p class="paste-hint">Just paste the whole email. Pitch Studio will detect the subject line, greeting, body, sign-off, and signature automtically.</p>
           <div class="hidden" id="parsedPreview">
             <div class="parsed-preview">
               <h4>Detected Structure</h4>
@@ -373,15 +373,52 @@ function renderParsedPreview(){
 }
 
 /* ===== AUTO TITLE GENERATOR ===== */
-function generatePitchTitle(){
+/* Format: Specialty-Town,State-Date  OR  Specialty-(Multiple Locations),State-Date */
+function generatePitchTitle(role,company,parsed){
   const now=new Date();
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dateStr=months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
-  const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
-  const todayEnd=todayStart+86400000;
-  const todayCount=pitches.filter(p=>p.created>=todayStart&&p.created<todayEnd).length;
-  if(todayCount===0)return 'Pitch \u2013 '+dateStr;
-  return 'Pitch \u2013 '+dateStr+' (#'+(todayCount+1)+')';
+  const text=(parsed?(parsed.subject||'')+' '+(parsed.body||''):'');
+
+  // Detect specialty/field from content
+  let specialty='';
+  const specPatterns=[
+    /(?:speciali[sz](?:e|ing|ation)|focus(?:ed|ing)?|field|area|practice|division|department|team|group)[\s:]+(?:in\s+)?([A-Za-z\/&\s]+?)(?:[,.\n]|$)/i,
+    /(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Administrative|Clerical|Creative|Design|Operations|Supply Chain|Logistics|Manufacturing|Pharmaceutical|Life Sciences|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Retail|Hospitality)/i
+  ];
+  const specMatch1=text.match(specPatterns[0]);
+  if(specMatch1)specialty=specMatch1[1].trim();
+  if(!specialty){const specMatch2=text.match(specPatterns[1]);if(specMatch2)specialty=specMatch2[0].trim()}
+  if(!specialty&&role){
+    const roleWords=role.split(/\s+/);
+    if(roleWords.length<=4)specialty=role;
+    else specialty=roleWords.slice(0,3).join(' ');
+  }
+  if(specialty&&specialty.length>30)specialty=specialty.substring(0,27)+'...';
+
+  // Detect locations (City, ST patterns)
+  const locPattern=/\b([A-Z][a-zA-Z\s.]+),\s*([A-Z]{2})\b/g;
+  const locations=[];let locMatch;
+  while((locMatch=locPattern.exec(text))!==null){
+    const city=locMatch[1].trim();const st=locMatch[2];
+    if(city.length>1&&city.length<30&&!/^(Subject|From|To|Date|Re|Fwd)$/i.test(city)){
+      const key=city+', '+st;
+      if(!locations.find(l=>l.key===key))locations.push({city,state:st,key})
+    }
+  }
+  let locationStr='';
+  if(locations.length===1)locationStr=locations[0].city+', '+locations[0].state;
+  else if(locations.length>1){
+    const states=[...new Set(locations.map(l=>l.state))];
+    locationStr='(Multiple Locations), '+states.join('/');
+  }
+
+  // Build title: Specialty-Location-Date
+  let parts=[];
+  if(specialty)parts.push(specialty);
+  if(locationStr)parts.push(locationStr);
+  parts.push(dateStr);
+  return parts.join(' \u2013 ');
 }
 
 /* ===== SAVE FROM PASTE ===== */
@@ -397,7 +434,7 @@ function saveFromPaste(){
   if(compMatch&&compMatch[1].trim().length<60)company=compMatch[1].trim();
 
   const fullBody=raw;
-  const title=generatePitchTitle();
+  const title=generatePitchTitle(role,company,d);
 
   if(editingPitchId){
     const i=pitches.findIndex(p=>p.id===editingPitchId);
@@ -448,8 +485,13 @@ function handleFileUpload(event){
       let text=e.target.result;
       if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
       const d=parsePitchEmail(text);
-      const subject=generatePitchTitle();
-      pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject,role:'',company:'',tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
+      let fRole='',fCompany='';
+      const fRoleMatch=(d.subject+' '+d.body).match(/(?:role|position|opportunity)[\s:]*(?:for\s+(?:a|an)\s+)?([A-Z][A-Za-z\s\/]+(?:Engineer|Developer|Manager|Designer|Analyst|Director|Lead|Architect|Consultant|Specialist|Coordinator|Associate|VP|Recruiter))/i);
+      if(fRoleMatch)fRole=fRoleMatch[1].trim();
+      const fCompMatch=(d.subject+' '+d.body).match(/(?:at|with|for|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n]|$)/);
+      if(fCompMatch&&fCompMatch[1].trim().length<60)fCompany=fCompMatch[1].trim();
+      const subject=generatePitchTitle(fRole,fCompany,d);
+      pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject,role:fRole,company:fCompany,tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
       results.push(file.name);processed++;
       if(processed===files.length){save();const rl=document.getElementById('uploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('uploadResults').classList.remove('hidden')}toast(processed+' file'+(processed!==1?'s':'')+' uploaded!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
     };reader.readAsText(file)});
