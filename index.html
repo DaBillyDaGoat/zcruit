@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitch Studio</title>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--border:#2e3247;--accent:#6c5ce7;--accent-light:#a29bfe;--text:#e8e8ef;--text-dim:#8b8da3;--success:#00b894;--warning:#fdcb6e;--danger:#e17055;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:300px;min-width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+.sidebar-header h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-dim)}
+.sidebar-actions{padding:12px 16px;display:flex;gap:8px}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff;flex:1}.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.pitch-list{flex:1;overflow-y:auto;padding:8px}
+.pitch-item{padding:12px 14px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:4px;border:1px solid transparent}
+.pitch-item:hover{background:var(--surface2)}.pitch-item.active{background:var(--surface2);border-color:var(--accent)}
+.pitch-item-title{font-size:13px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pitch-item-meta{font-size:11px;color:var(--text-dim);display:flex;gap:8px;align-items:center}
+.pitch-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase}
+.tag-pitch{background:rgba(108,92,231,.2);color:var(--accent-light)}
+.sidebar-stats{padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);display:flex;justify-content:space-between}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.main-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+.main-header h2{font-size:16px;font-weight:600}
+.header-actions{display:flex;gap:8px;align-items:center}
+.main-body{flex:1;overflow-y:auto;padding:24px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+input[type="text"],textarea,select{width:100%;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;transition:border-color .2s}
+input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-height:300px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
+.empty-state-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:18px;margin-bottom:8px}
+.empty-state p{font-size:14px;color:var(--text-dim);max-width:400px;line-height:1.6;margin-bottom:20px}
+.pitch-view{max-width:700px}
+.pitch-view .subject-line{font-size:20px;font-weight:700;margin-bottom:8px}
+.pitch-view .meta-row{font-size:13px;color:var(--text-dim);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap}
+.pitch-view .pitch-body{font-size:14px;line-height:1.8;white-space:pre-wrap;background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border)}
+.copy-toast{position:fixed;bottom:24px;right:24px;background:var(--success);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transform:translateY(10px);transition:all .3s;z-index:200}
+.copy-toast.show{opacity:1;transform:translateY(0)}
+.search-box{padding:8px 16px}
+.search-box input{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px}
+.search-box input:focus{outline:none;border-color:var(--accent)}
+.hidden{display:none!important}
+.export-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:12px}
+.export-block textarea{font-family:'Courier New',monospace;font-size:12px;min-height:200px;background:var(--bg)}
+.char-count{font-size:11px;color:var(--text-dim);text-align:right;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+<div class="sidebar-header"><h1>Pitch Studio</h1><p>Your recruiting pitch library</p></div>
+<div class="sidebar-actions"><button class="btn btn-primary" onclick="showAddPitch()">+ Add Pitch</button><button class="btn btn-secondary" onclick="showExportAll()" title="Export All">&#8599;</button></div>
+<div class="search-box"><input type="text" id="searchInput" placeholder="Search pitches..." oninput="filterPitches()"></div>
+<div class="pitch-list" id="pitchList"></div>
+<div class="sidebar-stats"><span id="pitchCount">0 pitches</span><span id="lastAdded"></span></div>
+</div>
+<div class="main"><div id="mainContent">
+<div class="empty-state" id="emptyState"><div class="empty-state-icon">&#9993;</div><h3>Welcome to Pitch Studio</h3><p>Start by pasting in your existing recruiting pitches. Add them one by one, or use bulk paste to add several at once.</p><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="showAddPitch()">Add Your First Pitch</button><button class="btn btn-secondary" onclick="showBulkPaste()">Bulk Paste</button></div></div>
+<div class="hidden" id="addPitchView"><div class="main-header"><h2 id="formTitle">Add a Pitch</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Cancel</button><button class="btn btn-primary btn-sm" onclick="savePitch()">Save Pitch</button></div></div><div class="main-body"><div style="max-width:700px"><div class="form-group"><label>Subject Line</label><input type="text" id="pitchSubject" placeholder="e.g. Exciting opportunity at [Company]..."></div><div class="form-group"><label>Role / Job Title</label><input type="text" id="pitchRole" placeholder="e.g. Senior Software Engineer"></div><div class="form-group"><label>Company</label><input type="text" id="pitchCompany" placeholder="e.g. Acme Corp"></div><div class="form-group"><label>Tags (comma-separated)</label><input type="text" id="pitchTags" placeholder="e.g. tech, senior, remote"></div><div class="form-group"><label>Pitch Body</label><textarea class="large" id="pitchBody" placeholder="Paste the full pitch email here..."></textarea></div><div class="form-group"><label>Notes (optional)</label><textarea id="pitchNotes" placeholder="Any notes about this pitch..."></textarea></div></div></div></div><div class="hidden" id="viewPitchView"><div class="main-header"><h2>View Pitch</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="copyPitch()">Copy to Clipboard</button><button class="btn btn-secondary btn-sm" onclick="editPitch()">Edit</button><button class="btn btn-danger btn-sm" onclick="deletePitch()">Delete</button></div></div><div class="main-body"><div class="pitch-view" id="pitchViewContent"></div></div></div>
+<div class="hidden" id="bulkPasteView"><div class="main-header"><h2>Bulk Paste Pitches</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Cancel</button><button class="btn btn-primary btn-sm" onclick="processBulkPaste()">Process & Add</button></div></div><div class="main-body"><div style="max-width:700px"><p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">Paste multiple pitches below. Separate each pitch with --- or ===.</p><div class="form-group"><label>Paste all pitches here</label><textarea class="large" id="bulkPasteArea" placeholder="Paste pitches here separated by ---"></textarea></div></div></div></div>
+<div class="hidden" id="exportAllView"><div class="main-header"><h2>Export All Pitches</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Back</button><button class="btn btn-primary btn-sm" onclick="copyExport()">Copy All to Clipboard</button></div></div><div class="main-body"><div style="max-width:700px"><p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">All your pitches formatted for easy copying.</p><div class="export-block"><textarea id="exportArea" class="large" readonly></textarea><div class="char-count" id="exportCharCount"></div></div></div></div></div>
+</div></div>
+</div>
+<div class="copy-toast" id="copyToast">Copied to clipboard!</div>
+<script>
+let pitches=[],currentPitchId=null,editingPitchId=null;
+function load(){try{const r=localStorage.getItem('pitch_studio_data');if(r)pitches=JSON.parse(r)}catch(e){pitches=[]}render()}
+function save(){localStorage.setItem('pitch_studio_data',JSON.stringify(pitches));render()}
+function render(){const l=document.getElementById('pitchList'),s=document.getElementById('searchInput').value.toLowerCase(),f=pitches.filter(p=>!s||(p.subject+' '+p.role+' '+p.company+' '+p.body+' '+(p.tags||[]).join(' ')).toLowerCase().includes(s));f.sort((a,b)=>b.created-a.created);if(!f.length&&!pitches.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No pitches yet.<br>Click "+ Add Pitch" to start.</div>';else if(!f.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No matches.</div>';else l.innerHTML=f.map(p=>'<div class="pitch-item '+(p.id===currentPitchId?'active':'')+`" onclick="viewPitch('`+p.id+`')"><div class="pitch-item-title">`+esc(p.subject||'Untitled Pitch')+'</div><div class="pitch-item-meta"><span class="pitch-tag tag-pitch">pitch</span>'+(p.role?'<span>'+esc(p.role)+'</span>':'')+(p.company?'<span>'+esc(p.company)+'</span>':'')+'</div></div>').join('');document.getElementById('pitchCount').textContent=pitches.length+' pitch'+(pitches.length!==1?'es':'')}
+function filterPitches(){render()}
+function showView(id){['emptyState','addPitchView','viewPitchView','bulkPasteView','exportAllView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function showAddPitch(){editingPitchId=null;document.getElementById('formTitle').textContent='Add a Pitch';['pitchSubject','pitchRole','pitchCompany','pitchTags','pitchBody','pitchNotes'].forEach(id=>document.getElementById(id).value='');showView('addPitchView')}
+function showBulkPaste(){document.getElementById('bulkPasteArea').value='';showView('bulkPasteView')}
+function showExportAll(){const t=pitches.map((p,i)=>{let o='=== PITCH '+(i+1)+' ===\n';if(p.subject)o+='Subject: '+p.subject+'\n';if(p.role)o+='Role: '+p.role+'\n';if(p.company)o+='Company: '+p.company+'\n';if(p.tags&&p.tags.length)o+='Tags: '+p.tags.join(', ')+'\n';o+='\n'+p.body+'\n';if(p.notes)o+='\nNotes: '+p.notes+'\n';return o}).join('\n---\n\n');document.getElementById('exportArea').value=t;document.getElementById('exportCharCount').textContent=t.length.toLocaleString()+' characters';showView('exportAllView')}
+function cancelForm(){pitches.length===0?showView('emptyState'):currentPitchId?viewPitch(currentPitchId):showView('emptyState')}
+function savePitch(){const s=document.getElementById('pitchSubject').value.trim(),r=document.getElementById('pitchRole').value.trim(),c=document.getElementById('pitchCompany').value.trim(),tg=document.getElementById('pitchTags').value.split(',').map(t=>t.trim()).filter(Boolean),b=document.getElementById('pitchBody').value.trim(),n=document.getElementById('pitchNotes').value.trim();if(!b){alert('Please paste the pitch body.');return}if(editingPitchId){const i=pitches.findIndex(p=>p.id===editingPitchId);if(i>=0){pitches[i]={...pitches[i],subject:s,role:r,company:c,tags:tg,body:b,notes:n,updated:Date.now()};currentPitchId=editingPitchId}}else{const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:s,role:r,company:c,tags:tg,body:b,notes:n,created:Date.now(),updated:Date.now()};pitches.push(p);currentPitchId=p.id}save();viewPitch(currentPitchId)}
+function viewPitch(id){const p=pitches.find(x=>x.id===id);if(!p)return;currentPitchId=id;document.getElementById('pitchViewContent').innerHTML='<div class="subject-line">'+esc(p.subject||'Untitled Pitch')+'</div><div class="meta-row">'+(p.role?'<span><strong>Role:</strong> '+esc(p.role)+'</span>':'')+(p.company?'<span><strong>Company:</strong> '+esc(p.company)+'</span>':'')+'<span><strong>Added:</strong> '+new Date(p.created).toLocaleDateString()+'</span>'+(p.tags&&p.tags.length?'<span><strong>Tags:</strong> '+p.tags.map(t=>esc(t)).join(', ')+'</span>':'')+'</div><div class="pitch-body">'+esc(p.body)+'</div>'+(p.notes?'<div style="margin-top:16px"><strong style="font-size:12px;color:var(--text-dim);text-transform:uppercase">Notes</strong><p style="margin-top:6px;font-size:14px;color:var(--text-dim);line-height:1.6">'+esc(p.notes)+'</p></div>':'');showView('viewPitchView');render()}
+function editPitch(){const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;editingPitchId=p.id;document.getElementById('formTitle').textContent='Edit Pitch';document.getElementById('pitchSubject').value=p.subject||'';document.getElementById('pitchRole').value=p.role||'';document.getElementById('pitchCompany').value=p.company||'';document.getElementById('pitchTags').value=(p.tags||[]).join(', ');document.getElementById('pitchBody').value=p.body||'';document.getElementById('pitchNotes').value=p.notes||'';showView('addPitchView')}
+function deletePitch(){if(!confirm('Delete this pitch?'))return;pitches=pitches.filter(p=>p.id!==currentPitchId);currentPitchId=null;save();pitches.length>0?viewPitch(pitches[0].id):showView('emptyState')}
+function copyPitch(){const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;let t='';if(p.subject)t+='Subject: '+p.subject+'\n\n';t+=p.body;navigator.clipboard.writeText(t).then(()=>toast('Copied to clipboard!'))}
+function copyExport(){navigator.clipboard.writeText(document.getElementById('exportArea').value).then(()=>toast('All pitches copied!'))}
+function processBulkPaste(){const raw=document.getElementById('bulkPasteArea').value.trim();if(!raw){alert('Please paste some pitches first.');return}const chunks=raw.split(/\n\s*(?:---+|===+)\s*\n/).filter(c=>c.trim());let added=0;for(const chunk of chunks){const t=chunk.trim();if(!t||t.length<20)continue;let subj='',body=t;const m=t.match(/^Subject:\s*(.+)/im);if(m){subj=m[1].trim();body=t.replace(/^Subject:\s*.+\n?/im,'').trim()}else{const fl=t.split('\n')[0].trim();if(fl.length<100&&fl.length>5)subj=fl}pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+added,subject:subj,role:'',company:'',tags:[],body,notes:'Added via bulk paste',created:Date.now(),updated:Date.now()});added++}if(!added){alert('No pitches found.');return}save();toast(added+' pitch'+(added!==1?'es':'')+' added!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function toast(m){const e=document.getElementById('copyToast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='n'){e.preventDefault();showAddPitch()}if(e.key==='Escape')cancelForm()});
+load();
+</script>
+</body>
+</html>
