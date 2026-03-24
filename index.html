@@ -468,14 +468,80 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
   <div class="studio-tabs">
     <button class="studio-tab" onclick="switchStudio('pitch')">Pitch Studio</button>
     <button class="studio-tab" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab" onclick="switchStudio('people')">People</button>
     <button class="studio-tab active" onclick="switchStudio('submission')">Submission Studio</button>
   </div>
-  <div class="main" style="flex:1">
-    <div class="coming-soon">
-      <div class="coming-soon-icon">&#9997;</div>
-      <h3>Submission Studio</h3>
-      <p>Turn intake call notes and candidate CVs into polished internal submissions. Coming soon.</p>
+  <div style="display:flex;flex:1;overflow:hidden">
+  <div class="sidebar">
+    <div class="sidebar-header"><h2>Submission Studio</h2><p>Internal submissions &amp; templates</p></div>
+    <div class="sidebar-actions">
+      <button class="btn btn-primary" onclick="showCreateSubmission()" style="flex:1">+ New Submission</button>
+      <button class="btn btn-secondary" onclick="showSubUpload()" title="Upload Past Submissions" style="padding:8px 10px">&#128206;</button>
+      <button class="btn btn-secondary" onclick="showSubExport()" title="Export All" style="padding:8px 10px">&#8599;</button>
     </div>
+    <div class="search-box"><input type="text" id="subSearchInput" placeholder="Search submissions..." oninput="renderSubList()"></div>
+    <div class="pitch-list" id="subList"></div>
+    <div class="sidebar-stats"><span id="subCount">0 submissions</span></div>
+  </div>
+  <div class="main"><div id="subMainContent">
+    <!-- Submission Empty state -->
+    <div class="empty-state" id="subEmptyState">
+      <div class="empty-state-icon">&#9997;</div>
+      <h3>Submission Studio</h3>
+      <p>Build internal submissions from job details, candidate CVs, and prescreen notes. Upload past submissions to use as templates, or create new ones from scratch.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <button class="btn btn-primary" onclick="showCreateSubmission()">New Submission</button>
+        <button class="btn btn-secondary" onclick="showSubUpload()">Upload Past Submissions</button>
+      </div>
+    </div>
+    <!-- Upload past submissions -->
+    <div class="hidden" id="subUploadView">
+      <div class="main-header"><h2>Upload Past Submissions</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelSubForm()">Back</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">Upload your previous internal submissions. Zcruit will learn the format so it can generate new ones in the same style. Supports .docx, .pdf, .txt, .html.</p>
+        <div class="drop-zone" id="subDropZone"><h3>&#9997; Drop submissions here or click to browse</h3><p>Select multiple files</p><p style="font-size:11px;margin-top:8px">.docx .pdf .txt .html .md</p><input type="file" id="subFileInput" multiple accept=".txt,.text,.html,.htm,.md,.rtf,.doc,.docx,.pdf,.csv" onchange="handleSubUpload(event)"></div>
+        <div class="hidden file-results" id="subUploadResults"><h4>Uploaded:</h4><ul id="subUploadResultsList"></ul></div>
+      </div></div>
+    </div>
+    <!-- View submission -->
+    <div class="hidden" id="subViewDetail">
+      <div class="main-header"><h2 id="subViewHeader">View Submission</h2><div class="header-actions">
+        <button class="btn btn-secondary btn-sm" onclick="copySubText()">Copy</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSub()">Delete</button>
+      </div></div>
+      <div class="main-body"><div id="subViewContent"></div></div>
+    </div>
+    <!-- Create new submission -->
+    <div class="hidden" id="subCreateView">
+      <div class="main-header"><h2>New Submission</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelSubForm()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveNewSub()">Save</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px">
+          <h4 style="font-size:13px;color:var(--accent-light);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Job Details</h4>
+          <div class="person-edit-row"><label>Job Title</label><input type="text" id="subJobTitle" placeholder="e.g. Senior Accountant"></div>
+          <div class="person-edit-row"><label>Compensation</label><input type="text" id="subComp" placeholder="e.g. $85K-$95K base + bonus"></div>
+          <div class="person-edit-row"><label>Schedule</label><input type="text" id="subSchedule" placeholder="e.g. Hybrid 3 days/week, M-F 9-5"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px">
+          <h4 style="font-size:13px;color:var(--accent-light);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Candidate</h4>
+          <div class="person-edit-row"><label>Candidate</label><select id="subCandidateSelect" style="flex:1;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px"><option value="">Select from People...</option></select></div>
+          <div class="person-edit-row"><label>Or type name</label><input type="text" id="subCandidateName" placeholder="Candidate name (if not in People)"></div>
+        </div>
+        <div class="form-group"><label>Prescreen / Call Notes</label>
+          <textarea class="large" id="subNotes" placeholder="Paste your prescreen call notes, intake notes, or any relevant details about the candidate..."></textarea>
+        </div>
+        <div class="form-group"><label>Additional Notes</label>
+          <textarea id="subExtra" rows="3" placeholder="Anything else to include in the submission..."></textarea>
+        </div>
+      </div></div>
+    </div>
+    <!-- Export -->
+    <div class="hidden" id="subExportView">
+      <div class="main-header"><h2>Export All Submissions</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelSubForm()">Back</button><button class="btn btn-primary btn-sm" onclick="copySubExport()">Copy All</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <div class="export-block"><textarea id="subExportArea" class="large" readonly></textarea></div>
+      </div></div>
+    </div>
+  </div></div>
   </div>
   </div>
 </div>
@@ -491,6 +557,7 @@ let parsedData={subject:'',greeting:'',body:'',signoff:'',signature:'',raw:''};
 let activeTagFilter='';
 let cvs=[],currentCVId=null;
 let people=[],currentPersonId=null,editingPersonId=null;
+let submissions=[],currentSubId=null;
 let jdData={raw:'',title:'',company:'',location:'',specialty:'',tone:'professional',approach:'opportunity',yourName:'',yourCompany:''};
 
 /* ===== NAV ===== */
@@ -515,11 +582,13 @@ function load(){
   try{const r=localStorage.getItem('pitch_studio_data');if(r)pitches=JSON.parse(r)}catch(e){pitches=[]}
   try{const c=localStorage.getItem('cv_studio_data');if(c)cvs=JSON.parse(c)}catch(e){cvs=[]}
   try{const p=localStorage.getItem('people_data');if(p)people=JSON.parse(p)}catch(e){people=[]}
-  render();renderCVList();renderPeopleList();
+  try{const s=localStorage.getItem('submission_data');if(s)submissions=JSON.parse(s)}catch(e){submissions=[]}
+  render();renderCVList();renderPeopleList();renderSubList();
 }
 function save(){localStorage.setItem('pitch_studio_data',JSON.stringify(pitches));render()}
 function saveCVs(){localStorage.setItem('cv_studio_data',JSON.stringify(cvs));renderCVList()}
 function savePeople(){localStorage.setItem('people_data',JSON.stringify(people));renderPeopleList()}
+function saveSubs(){localStorage.setItem('submission_data',JSON.stringify(submissions));renderSubList()}
 
 /* ===== RENDER PITCH LIST ===== */
 function render(){
@@ -1199,6 +1268,124 @@ function showPeopleExport(){
   document.getElementById('peopleExportArea').value=t;showPeopleView('peopleExportView');
 }
 function copyPeopleExport(){navigator.clipboard.writeText(document.getElementById('peopleExportArea').value).then(()=>toast('People list copied!'))}
+
+/* ================================================================ */
+/* ==================== SUBMISSION STUDIO LOGIC =================== */
+/* ================================================================ */
+
+function showSubView(id){['subEmptyState','subUploadView','subViewDetail','subCreateView','subExportView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function cancelSubForm(){submissions.length===0?showSubView('subEmptyState'):currentSubId?viewSub(currentSubId):showSubView('subEmptyState')}
+function showSubUpload(){document.getElementById('subUploadResults').classList.add('hidden');showSubView('subUploadView')}
+
+function showCreateSubmission(){
+  document.getElementById('subJobTitle').value='';
+  document.getElementById('subComp').value='';
+  document.getElementById('subSchedule').value='';
+  document.getElementById('subCandidateName').value='';
+  document.getElementById('subNotes').value='';
+  document.getElementById('subExtra').value='';
+  // Populate candidate dropdown from People
+  const sel=document.getElementById('subCandidateSelect');
+  sel.innerHTML='<option value="">Select from People...</option>';
+  people.forEach(p=>{sel.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+(p.specialty?' ('+esc(p.specialty)+')':'')+'</option>'});
+  showSubView('subCreateView');
+}
+
+function renderSubList(){
+  const l=document.getElementById('subList'),s=document.getElementById('subSearchInput').value.toLowerCase();
+  const f=submissions.filter(sub=>!s||(sub.title+' '+sub.candidate+' '+sub.jobTitle+' '+sub.body).toLowerCase().includes(s));
+  f.sort((a,b)=>b.created-a.created);
+  if(!f.length&&!submissions.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No submissions yet.</div>';
+  else if(!f.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No matches.</div>';
+  else l.innerHTML=f.map(sub=>{
+    const tag=sub.type==='template'?'<span class="pitch-tag" style="background:rgba(253,203,110,.2);color:var(--warning)">TEMPLATE</span>':'<span class="pitch-tag tag-pitch">submission</span>';
+    return '<div class="pitch-item '+(sub.id===currentSubId?'active':'')+'" onclick="viewSub(\''+sub.id+'\')"><div class="pitch-item-title">'+esc(sub.title||'Untitled')+'</div><div class="pitch-item-meta">'+tag+(sub.candidate?'<span>'+esc(sub.candidate)+'</span>':'')+(sub.jobTitle?'<span>'+esc(sub.jobTitle)+'</span>':'')+'</div></div>';
+  }).join('');
+  document.getElementById('subCount').textContent=submissions.length+' submission'+(submissions.length!==1?'s':'');
+}
+
+function handleSubUpload(event){
+  const files=Array.from(event.target.files);if(!files.length)return;
+  const results=[];let processed=0;
+  files.forEach(file=>{
+    extractTextFromFile(file,function(text){
+      const title=file.name.replace(/\.[^.]+$/,'');
+      // Try to detect candidate name and job title from content
+      let candidate='',jobTitle='';
+      const nameMatch=text.match(/(?:candidate|name)[\s:]+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,3})/i);
+      if(nameMatch)candidate=nameMatch[1].trim();
+      const jtMatch=text.match(/(?:position|role|title|job)[\s:]+([^\n]{5,60})/i);
+      if(jtMatch)jobTitle=jtMatch[1].trim();
+      submissions.push({id:'sub_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,title:title,type:'template',candidate,jobTitle,comp:'',schedule:'',body:text.trim(),notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
+      results.push(file.name);processed++;
+      if(processed===files.length){saveSubs();const rl=document.getElementById('subUploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('subUploadResults').classList.remove('hidden')}toast(processed+' submission'+(processed!==1?'s':'')+' uploaded!');if(submissions.length>0)viewSub(submissions[submissions.length-1].id)}
+    });
+  });
+}
+
+function viewSub(id){
+  const sub=submissions.find(x=>x.id===id);if(!sub)return;
+  currentSubId=id;
+  document.getElementById('subViewHeader').textContent=sub.title||'Untitled Submission';
+  let html='<div style="max-width:700px">';
+  html+='<div style="font-size:20px;font-weight:700;margin-bottom:12px">'+esc(sub.title||'Untitled')+'</div>';
+  if(sub.type==='template')html+='<div style="margin-bottom:12px"><span class="pitch-tag" style="background:rgba(253,203,110,.2);color:var(--warning);font-size:12px;padding:3px 10px">PAST SUBMISSION / TEMPLATE</span></div>';
+  // Job details card
+  if(sub.jobTitle||sub.comp||sub.schedule){
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px">';
+    html+='<h4 style="font-size:12px;color:var(--accent-light);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Job Details</h4>';
+    if(sub.jobTitle)html+='<div class="person-field"><span class="pf-label">Title</span><span class="pf-value">'+esc(sub.jobTitle)+'</span></div>';
+    if(sub.comp)html+='<div class="person-field"><span class="pf-label">Comp</span><span class="pf-value">'+esc(sub.comp)+'</span></div>';
+    if(sub.schedule)html+='<div class="person-field"><span class="pf-label">Schedule</span><span class="pf-value">'+esc(sub.schedule)+'</span></div>';
+    html+='</div>';
+  }
+  if(sub.candidate)html+='<div class="person-field"><span class="pf-label">Candidate</span><span class="pf-value">'+esc(sub.candidate)+'</span></div>';
+  html+='<div class="cv-preview" style="margin-top:12px">'+esc(sub.body)+'</div>';
+  if(sub.notes)html+='<div style="margin-top:12px;font-size:13px;color:var(--text-dim)">'+esc(sub.notes)+'</div>';
+  html+='<div style="margin-top:12px;font-size:11px;color:var(--text-dim)">Added: '+new Date(sub.created).toLocaleDateString()+'</div>';
+  html+='</div>';
+  document.getElementById('subViewContent').innerHTML=html;
+  showSubView('subViewDetail');renderSubList();
+}
+
+function saveNewSub(){
+  const jobTitle=document.getElementById('subJobTitle').value.trim();
+  const comp=document.getElementById('subComp').value.trim();
+  const schedule=document.getElementById('subSchedule').value.trim();
+  const selId=document.getElementById('subCandidateSelect').value;
+  let candidate=document.getElementById('subCandidateName').value.trim();
+  if(selId&&!candidate){const p=people.find(x=>x.id===selId);if(p)candidate=p.name}
+  const notes=document.getElementById('subNotes').value.trim();
+  const extra=document.getElementById('subExtra').value.trim();
+  if(!jobTitle&&!candidate){alert('Please enter at least a job title or candidate name.');return}
+  // Build submission body
+  let body='INTERNAL SUBMISSION\n';
+  body+='==================\n\n';
+  if(jobTitle)body+='Position: '+jobTitle+'\n';
+  if(comp)body+='Compensation: '+comp+'\n';
+  if(schedule)body+='Schedule: '+schedule+'\n';
+  body+='\n';
+  if(candidate)body+='Candidate: '+candidate+'\n\n';
+  if(notes)body+='--- PRESCREEN NOTES ---\n'+notes+'\n\n';
+  if(extra)body+='--- ADDITIONAL NOTES ---\n'+extra+'\n';
+  const title=(candidate||'Unknown')+' - '+(jobTitle||'Untitled Role');
+  const sub={id:'sub_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),title,type:'new',candidate,jobTitle,comp,schedule,body:body.trim(),notes:'',created:Date.now(),updated:Date.now()};
+  submissions.push(sub);currentSubId=sub.id;
+  saveSubs();viewSub(sub.id);toast('Submission created!');
+}
+
+function copySubText(){const sub=submissions.find(x=>x.id===currentSubId);if(!sub)return;navigator.clipboard.writeText(sub.body).then(()=>toast('Submission copied!'))}
+function deleteSub(){if(!confirm('Delete this submission?'))return;submissions=submissions.filter(s=>s.id!==currentSubId);currentSubId=null;saveSubs();submissions.length>0?viewSub(submissions[0].id):showSubView('subEmptyState')}
+
+function showSubExport(){
+  const t=submissions.map((s,i)=>'=== SUBMISSION '+(i+1)+' ===\n'+(s.title||'Untitled')+'\n\n'+s.body).join('\n\n---\n\n');
+  document.getElementById('subExportArea').value=t;showSubView('subExportView');
+}
+function copySubExport(){navigator.clipboard.writeText(document.getElementById('subExportArea').value).then(()=>toast('All submissions copied!'))}
+
+/* Submission drag & drop */
+const subDz=document.getElementById('subDropZone');
+if(subDz){subDz.addEventListener('dragover',e=>{e.preventDefault();subDz.classList.add('dragover')});subDz.addEventListener('dragleave',()=>subDz.classList.remove('dragover'));subDz.addEventListener('drop',e=>{e.preventDefault();subDz.classList.remove('dragover');const input=document.getElementById('subFileInput');const dt=new DataTransfer();Array.from(e.dataTransfer.files).forEach(f=>dt.items.add(f));input.files=dt.files;handleSubUpload({target:input})})}
 
 /* ===== UTILS ===== */
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
