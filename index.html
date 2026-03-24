@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zcruit</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <style>
 :root{--bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--border:#2e3247;--accent:#6c5ce7;--accent-light:#a29bfe;--text:#e8e8ef;--text-dim:#8b8da3;--success:#00b894;--warning:#fdcb6e;--danger:#e17055;--radius:12px}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -246,7 +249,7 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
         <button class="btn btn-primary" onclick="showPasteNew()">Paste a Pitch</button>
         <button class="btn btn-secondary" onclick="showCreateFromJD()">Create from JD</button>
         <button class="btn btn-secondary" onclick="showBulkPaste()">Bulk Paste</button>
-        <button class="btn btn-upload" onclick="document.getElementById('emptyUpload').click()">&#128206; Upload Files<input type="file" id="emptyUpload" multiple accept=".txt,.text,.eml,.msg,.html,.htm,.doc,.rtf,.csv,.md" onchange="handleFileUpload(event)"></button>
+        <button class="btn btn-upload" onclick="document.getElementById('emptyUpload').click()">&#128206; Upload Files<input type="file" id="emptyUpload" multiple accept=".txt,.text,.eml,.msg,.html,.htm,.doc,.docx,.pdf,.rtf,.csv,.md" onchange="handleFileUpload(event)"></button>
       </div>
     </div>
     <!-- Single paste box with smart parse -->
@@ -283,7 +286,7 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       <div class="main-header"><h2>Upload Pitch Files</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Back</button></div></div>
       <div class="main-body"><div style="max-width:700px">
         <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">Upload text files containing your pitches. Each file becomes one pitch. Supports .txt, .eml, .html, .md, and more.</p>
-        <div class="drop-zone" id="dropZone"><h3>&#128206; Drop files here or click to browse</h3><p>Select multiple files at once</p><p style="font-size:11px;margin-top:8px">.txt .eml .html .md .rtf .csv</p><input type="file" id="fileUploadInput" multiple accept=".txt,.text,.eml,.msg,.html,.htm,.rtf,.csv,.md" onchange="handleFileUpload(event)"></div>
+        <div class="drop-zone" id="dropZone"><h3>&#128206; Drop files here or click to browse</h3><p>Select multiple files at once</p><p style="font-size:11px;margin-top:8px">.txt .eml .html .md .rtf .csv .docx .pdf</p><input type="file" id="fileUploadInput" multiple accept=".txt,.text,.eml,.msg,.html,.htm,.rtf,.csv,.md" onchange="handleFileUpload(event)"></div>
         <div class="hidden file-results" id="uploadResults"><h4>Uploaded:</h4><ul id="uploadResultsList"></ul></div>
       </div></div>
     </div>
@@ -376,7 +379,7 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       <div class="main-header"><h2>Upload CVs</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelCVForm()">Back</button></div></div>
       <div class="main-body"><div style="max-width:700px">
         <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">Upload candidate resumes. Each file becomes one CV entry.</p>
-        <div class="drop-zone" id="cvDropZone"><h3>&#128196; Drop CVs here or click to browse</h3><p>Select multiple files</p><p style="font-size:11px;margin-top:8px">.txt .html .md .rtf .doc</p><input type="file" id="cvFileInput" multiple accept=".txt,.text,.html,.htm,.md,.rtf,.doc,.csv" onchange="handleCVUpload(event)"></div>
+        <div class="drop-zone" id="cvDropZone"><h3>&#128196; Drop CVs here or click to browse</h3><p>Select multiple files</p><p style="font-size:11px;margin-top:8px">.txt .html .md .rtf .doc .docx .pdf</p><input type="file" id="cvFileInput" multiple accept=".txt,.text,.html,.htm,.md,.rtf,.doc,.docx,.pdf,.csv" onchange="handleCVUpload(event)"></div>
         <div class="hidden file-results" id="cvUploadResults"><h4>Uploaded:</h4><ul id="cvUploadResultsList"></ul></div>
       </div></div>
     </div>
@@ -676,6 +679,14 @@ function generatePitchTitle(role,company,parsed){
   if(specialty)parts.push(specialty);
   if(locationStr)parts.push(locationStr);
   parts.push(dateStr);
+  // If no specialty or location found, use first meaningful line as identifier
+  if(!specialty&&!locationStr&&parsed){
+    const firstLine=(parsed.subject||parsed.greeting||parsed.body||'').split('\n')[0].trim();
+    if(firstLine&&firstLine.length>3){
+      const snippet=firstLine.length>40?firstLine.substring(0,37)+'...':firstLine;
+      parts.unshift(snippet);
+    }
+  }
   return parts.join(' \u2013 ');
 }
 
@@ -832,14 +843,45 @@ function processBulkPaste(){
   if(pitches.length>0)viewPitch(pitches[pitches.length-1].id);
 }
 
+/* ===== FILE TEXT EXTRACTOR (supports .docx, .pdf, .html, .txt, etc.) ===== */
+function extractTextFromFile(file,callback){
+  const ext=file.name.toLowerCase().split('.').pop();
+  if(ext==='docx'&&typeof mammoth!=='undefined'){
+    const reader=new FileReader();reader.onload=function(e){
+      mammoth.extractRawText({arrayBuffer:e.target.result}).then(function(r){callback(r.value||'')}).catch(function(){callback('[Error reading .docx]')});
+    };reader.readAsArrayBuffer(file);
+  }else if(ext==='pdf'&&typeof pdfjsLib!=='undefined'){
+    const reader=new FileReader();reader.onload=function(e){
+      const arr=new Uint8Array(e.target.result);
+      pdfjsLib.getDocument({data:arr}).promise.then(function(pdf){
+        let text='';let done=0;
+        for(let i=1;i<=pdf.numPages;i++){
+          pdf.getPage(i).then(function(page){
+            page.getTextContent().then(function(tc){
+              text+=tc.items.map(function(item){return item.str}).join(' ')+'\n';
+              done++;
+              if(done===pdf.numPages)callback(text.trim());
+            });
+          });
+        }
+        if(pdf.numPages===0)callback('');
+      }).catch(function(){callback('[Error reading .pdf]')});
+    };reader.readAsArrayBuffer(file);
+  }else{
+    const reader=new FileReader();reader.onload=function(e){
+      let text=e.target.result;
+      if(ext==='html'||ext==='htm'){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
+      callback(text);
+    };reader.readAsText(file);
+  }
+}
+
 /* ===== FILE UPLOAD ===== */
 function handleFileUpload(event){
   const files=Array.from(event.target.files);if(!files.length)return;
   const results=[];let processed=0;
   files.forEach(file=>{
-    const reader=new FileReader();reader.onload=function(e){
-      let text=e.target.result;
-      if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
+    extractTextFromFile(file,function(text){
       const d=parsePitchEmail(text);
       const{role,company}=extractRoleCompany((d.subject||'')+' '+(d.body||''));
       const subject=generatePitchTitle(role,company,d);
@@ -848,7 +890,8 @@ function handleFileUpload(event){
       }
       results.push(file.name);processed++;
       if(processed===files.length){save();const rl=document.getElementById('uploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('uploadResults').classList.remove('hidden')}toast(processed+' file'+(processed!==1?'s':'')+' processed!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
-    };reader.readAsText(file)});
+    });
+  });
 }
 
 /* ===== DRAG & DROP (PITCH) ===== */
@@ -1008,16 +1051,12 @@ function handleCVUpload(event){
   const files=Array.from(event.target.files);if(!files.length)return;
   const results=[];let processed=0,dupeSkipped=0;
   files.forEach(file=>{
-    const reader=new FileReader();reader.onload=function(e){
-      let text=e.target.result;
-      if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
+    extractTextFromFile(file,function(text){
       const name=extractCVName(text);
-      // CV duplicate check (by filename or near-identical content)
       const isDupeCv=cvs.some(c=>c.source===file.name||c.body.trim().toLowerCase()===text.trim().toLowerCase());
       if(!isDupeCv){
         const cvId='cv_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed;
         cvs.push({id:cvId,name,body:text.trim(),source:file.name,created:Date.now(),updated:Date.now()});
-        // Auto-extract contact info and add to People
         const contact=extractContactFromCV(text,name);
         if(contact.name&&!isPersonDuplicate(contact.name,contact.email)){
           people.push({id:'per_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,name:contact.name,specialty:contact.specialty,phone:contact.phone,email:contact.email,notes:'Auto-added from CV: '+file.name,cvId:cvId,created:Date.now(),updated:Date.now()});
@@ -1026,7 +1065,8 @@ function handleCVUpload(event){
       }else{dupeSkipped++}
       processed++;
       if(processed===files.length){saveCVs();savePeople();const rl=document.getElementById('cvUploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('cvUploadResults').classList.remove('hidden')}let msg=results.length+' CV'+(results.length!==1?'s':'')+' uploaded!';if(dupeSkipped)msg+=' ('+dupeSkipped+' duplicate'+(dupeSkipped!==1?'s':'')+' skipped)';toast(msg);if(cvs.length>0)viewCV(cvs[cvs.length-1].id)}
-    };reader.readAsText(file)});
+    });
+  });
 }
 
 /* ===== CONTACT EXTRACTION FROM CV ===== */
