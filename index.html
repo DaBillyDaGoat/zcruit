@@ -10,7 +10,7 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .app{display:flex;height:100vh;overflow:hidden}
 
-/* === NAV RAIL (left icon bar) === */
+/* === NAV RAIL === */
 .nav-rail{width:64px;min-width:64px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;z-index:10}
 .nav-logo{font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;cursor:default;letter-spacing:-1px}
 .nav-btn{width:48px;height:48px;border-radius:12px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:600;transition:all .2s;position:relative}
@@ -24,7 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .studio-panel{display:none;flex:1;overflow:hidden}
 .studio-panel.active{display:flex}
 
-/* === SIDEBAR (pitch list, etc.) === */
+/* === SIDEBAR === */
 .sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
 .sidebar-header{padding:16px;border-bottom:1px solid var(--border)}
 .sidebar-header h2{font-size:16px;font-weight:700;margin-bottom:2px}
@@ -41,16 +41,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .search-box{padding:6px 12px}
 .search-box input{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px}
 .search-box input:focus{outline:none;border-color:var(--accent)}
+
+/* === SORT & FILTER BAR === */
+.sort-bar{padding:4px 12px;display:flex;gap:6px;align-items:center}
+.sort-bar label{font-size:11px;color:var(--text-dim);font-weight:600}
+.sort-bar select{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 8px;cursor:pointer}
+.sort-bar select:focus{outline:none;border-color:var(--accent)}
+.tag-filter-bar{padding:2px 12px 6px;display:flex;gap:4px;flex-wrap:wrap}
+.tag-filter-chip{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all .2s}
+.tag-filter-chip:hover,.tag-filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
 .pitch-list{flex:1;overflow-y:auto;padding:6px}
 .pitch-item{padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:3px;border:1px solid transparent}
 .pitch-item:hover{background:var(--surface2)}.pitch-item.active{background:var(--surface2);border-color:var(--accent)}
 .pitch-item-title{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pitch-item-meta{font-size:11px;color:var(--text-dim);display:flex;gap:6px;align-items:center}
+.pitch-item-meta{font-size:11px;color:var(--text-dim);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .pitch-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase}
 .tag-pitch{background:rgba(108,92,231,.2);color:var(--accent-light)}
+.tag-custom{background:rgba(0,184,148,.15);color:var(--success)}
 .sidebar-stats{padding:10px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);display:flex;justify-content:space-between}
 
-/* === MAIN CONTENT AREA === */
+/* === MAIN CONTENT === */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .main-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
 .main-header h2{font-size:16px;font-weight:600}
@@ -63,17 +74,27 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
 textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-height:300px}
 .hidden{display:none!important}
 
-/* === EMPTY / WELCOME STATES === */
+/* === EMPTY / WELCOME === */
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
 .empty-state-icon{font-size:48px;margin-bottom:16px;opacity:.5}
 .empty-state h3{font-size:18px;margin-bottom:8px}
 .empty-state p{font-size:14px;color:var(--text-dim);max-width:440px;line-height:1.6;margin-bottom:20px}
 
-/* === PITCH VIEW === */
+/* === PITCH VIEW (with inline edit) === */
 .pitch-view{max-width:700px}
 .pitch-view .subject-line{font-size:20px;font-weight:700;margin-bottom:8px}
-.pitch-view .meta-row{font-size:13px;color:var(--text-dim);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap}
+.pitch-view .meta-row{font-size:13px;color:var(--text-dim);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .pitch-view .pitch-body{font-size:14px;line-height:1.8;white-space:pre-wrap;background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border)}
+.inline-edit{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:inherit;font-family:inherit;transition:border-color .2s}
+.inline-edit:focus{outline:none;border-color:var(--accent)}
+.inline-edit-title{font-size:20px;font-weight:700;width:100%;margin-bottom:8px}
+.inline-edit-sm{font-size:13px;width:140px}
+.tag-chips{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(0,184,148,.15);color:var(--success)}
+.tag-chip .remove-tag{cursor:pointer;opacity:.6;font-size:13px;line-height:1}.tag-chip .remove-tag:hover{opacity:1}
+.tag-add-input{background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:2px 8px;font-size:11px;width:90px}
+.tag-add-input:focus{outline:none;border-color:var(--accent)}
+.dupe-warning{background:rgba(225,112,85,.1);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--danger);display:flex;align-items:center;gap:8px}
 
 /* === PASTE BOX / SMART PARSE === */
 .paste-area{max-width:700px;margin:0 auto}
@@ -110,7 +131,43 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
 .studio-tab:hover{background:var(--surface2);color:var(--text)}
 .studio-tab.active{background:var(--accent);color:#fff}
 
-/* === COMING SOON PLACEHOLDER === */
+/* === CREATE FROM JD === */
+.jd-section{max-width:700px;margin:0 auto}
+.jd-step{margin-bottom:20px}
+.jd-step h4{font-size:13px;color:var(--accent-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.jd-options{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.jd-option{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;font-size:13px;font-weight:500;transition:all .2s}
+.jd-option:hover{border-color:var(--accent-light);color:var(--text)}
+.jd-option.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.jd-generated{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.jd-generated h4{font-size:13px;color:var(--success);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+
+/* === CV STUDIO === */
+.cv-list{flex:1;overflow-y:auto;padding:6px}
+.cv-item{padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:3px;border:1px solid transparent}
+.cv-item:hover{background:var(--surface2)}.cv-item.active{background:var(--surface2);border-color:var(--accent)}
+.cv-item-title{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv-item-meta{font-size:11px;color:var(--text-dim)}
+.cv-preview{max-width:700px;font-size:14px;line-height:1.8;white-space:pre-wrap;background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border)}
+
+/* === PEOPLE === */
+.person-item{padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:3px;border:1px solid transparent}
+.person-item:hover{background:var(--surface2)}.person-item.active{background:var(--surface2);border-color:var(--accent)}
+.person-item-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.person-item-meta{font-size:11px;color:var(--text-dim)}
+.person-detail{max-width:700px}
+.person-detail-name{font-size:22px;font-weight:700;margin-bottom:12px}
+.person-field{display:flex;gap:12px;align-items:center;margin-bottom:12px;font-size:14px}
+.person-field .pf-label{color:var(--text-dim);min-width:80px;font-weight:600;font-size:12px;text-transform:uppercase}
+.person-field .pf-value{color:var(--text);flex:1}
+.person-edit-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.person-edit-row label{color:var(--text-dim);min-width:80px;font-weight:600;font-size:12px;text-transform:uppercase}
+.person-edit-row input{flex:1;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px}
+.person-edit-row input:focus{outline:none;border-color:var(--accent)}
+.person-cv-link{margin-top:16px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
+.person-cv-link:hover{border-color:var(--accent)}
+
+/* === COMING SOON === */
 .coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
 .coming-soon-icon{font-size:56px;margin-bottom:20px;opacity:.4}
 .coming-soon h3{font-size:22px;margin-bottom:10px}
@@ -131,9 +188,13 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
     <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
     Pitch
   </button>
-  <button class="nav-btn" id="navCV" onclick="switchStudio('cv')" title="CV Studio">
+  <button class="nav-btn" id="navCv" onclick="switchStudio('cv')" title="CV Studio">
     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     CV
+  </button>
+  <button class="nav-btn" id="navPeople" onclick="switchStudio('people')" title="People">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    People
   </button>
   <button class="nav-btn" id="navSubmission" onclick="switchStudio('submission')" title="Submission Studio">
     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -148,6 +209,7 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
   <div class="studio-tabs">
     <button class="studio-tab active" onclick="switchStudio('pitch')">Pitch Studio</button>
     <button class="studio-tab" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab" onclick="switchStudio('people')">People</button>
     <button class="studio-tab" onclick="switchStudio('submission')">Submission Studio</button>
   </div>
   <div style="display:flex;flex:1;overflow:hidden">
@@ -155,10 +217,22 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
     <div class="sidebar-header"><h2>Pitch Studio</h2><p>Your recruiting pitch library</p></div>
     <div class="sidebar-actions">
       <button class="btn btn-primary" onclick="showPasteNew()" style="flex:1">+ Paste Pitch</button>
+      <button class="btn btn-secondary" onclick="showCreateFromJD()" title="Create from JD" style="padding:8px 10px">&#9997;</button>
+      <button class="btn btn-secondary" onclick="showBulkPaste()" title="Bulk Paste" style="padding:8px 10px">&#8853;</button>
       <button class="btn btn-secondary" onclick="showUpload()" title="Upload Files" style="padding:8px 10px">&#128206;</button>
       <button class="btn btn-secondary" onclick="showExportAll()" title="Export All" style="padding:8px 10px">&#8599;</button>
     </div>
     <div class="search-box"><input type="text" id="searchInput" placeholder="Search pitches..." oninput="filterPitches()"></div>
+    <div class="sort-bar">
+      <label>Sort:</label>
+      <select id="sortSelect" onchange="render()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="alpha">A-Z Title</option>
+        <option value="updated">Last Edited</option>
+      </select>
+    </div>
+    <div class="tag-filter-bar" id="tagFilterBar"></div>
     <div class="pitch-list" id="pitchList"></div>
     <div class="sidebar-stats"><span id="pitchCount">0 pitches</span><span id="lastAdded"></span></div>
   </div>
@@ -167,9 +241,11 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
     <div class="empty-state" id="emptyState">
       <div class="empty-state-icon">&#9993;</div>
       <h3>Welcome to Pitch Studio</h3>
-      <p>Paste in your recruiting pitches or upload files. The AI will automatically detect subject lines, signatures, intros, and more.</p>
+      <p>Paste in your recruiting pitches, create from a job description, or upload files. Smart parse will auto-detect structure and generate titles.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
         <button class="btn btn-primary" onclick="showPasteNew()">Paste a Pitch</button>
+        <button class="btn btn-secondary" onclick="showCreateFromJD()">Create from JD</button>
+        <button class="btn btn-secondary" onclick="showBulkPaste()">Bulk Paste</button>
         <button class="btn btn-upload" onclick="document.getElementById('emptyUpload').click()">&#128206; Upload Files<input type="file" id="emptyUpload" multiple accept=".txt,.text,.eml,.msg,.html,.htm,.doc,.rtf,.csv,.md" onchange="handleFileUpload(event)"></button>
       </div>
     </div>
@@ -179,9 +255,10 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
       <div class="main-body">
         <div class="paste-area">
           <div class="form-group"><label>Paste your full pitch email below</label>
-            <textarea class="large" id="pasteBox" placeholder="Paste the entire email here â subject line, body, signature, everything. The AI will parse it automatically." oninput="smartParse()"></textarea>
+            <textarea class="large" id="pasteBox" placeholder="Paste the entire email here — subject line, body, signature, everything. The AI will parse it automatically." oninput="smartParse()"></textarea>
           </div>
-          <p class="paste-hint">Just paste the whole email. Pitch Studio will detect the subject line, greeting, body, sign-off, and signature automtically.</p>
+          <p class="paste-hint">Just paste the whole email. Pitch Studio will detect the subject line, greeting, body, sign-off, and signature automatically.</p>
+          <div class="hidden" id="dupeWarning"><div class="dupe-warning">&#9888; This pitch looks similar to one already in your library. Save anyway?</div></div>
           <div class="hidden" id="parsedPreview">
             <div class="parsed-preview">
               <h4>Detected Structure</h4>
@@ -191,9 +268,14 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
         </div>
       </div>
     </div>
-    <!-- View pitch -->
+    <!-- View pitch (with inline edit) -->
     <div class="hidden" id="viewPitchView">
-      <div class="main-header"><h2>View Pitch</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="copyPitch()">Copy to Clipboard</button><button class="btn btn-secondary btn-sm" onclick="editPitchInPaste()">Edit</button><button class="btn btn-danger btn-sm" onclick="deletePitch()">Delete</button></div></div>
+      <div class="main-header"><h2 id="viewPitchHeader">View Pitch</h2><div class="header-actions">
+        <button class="btn btn-secondary btn-sm" id="btnEditMode" onclick="toggleEditMode()">Edit Details</button>
+        <button class="btn btn-secondary btn-sm" onclick="copyPitch()">Copy</button>
+        <button class="btn btn-secondary btn-sm" onclick="editPitchInPaste()">Edit Body</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePitch()">Delete</button>
+      </div></div>
       <div class="main-body"><div class="pitch-view" id="pitchViewContent"></div></div>
     </div>
     <!-- Upload view -->
@@ -213,6 +295,47 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
         <div class="export-block"><textarea id="exportArea" class="large" readonly></textarea><div class="char-count" id="exportCharCount"></div></div>
       </div></div>
     </div>
+    <!-- Bulk paste view -->
+    <div class="hidden" id="bulkPasteView">
+      <div class="main-header"><h2>Bulk Paste Pitches</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Cancel</button><button class="btn btn-primary btn-sm" onclick="processBulkPaste()">Process &amp; Add</button></div></div>
+      <div class="main-body"><div class="paste-area">
+        <div class="form-group"><label>Paste all pitches here (separate with --- or ===)</label>
+          <textarea class="large" id="bulkPasteArea" placeholder="Subject: Exciting opportunity at Company A&#10;&#10;Hi there,&#10;I wanted to reach out about...&#10;&#10;---&#10;&#10;Subject: Great role at Company B&#10;&#10;Hello,&#10;We have an opening for..."></textarea>
+        </div>
+        <p class="paste-hint">Paste multiple pitches separated by <strong>---</strong> or <strong>===</strong> lines. Each chunk gets auto-titled.</p>
+      </div></div>
+    </div>
+    <!-- Create from JD view -->
+    <div class="hidden" id="createJDView">
+      <div class="main-header"><h2>Create Pitch from Job Description</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelForm()">Cancel</button></div></div>
+      <div class="main-body"><div class="jd-section">
+        <!-- Step 1: Paste JD -->
+        <div class="jd-step" id="jdStep1">
+          <h4>Step 1: Paste the Job Description</h4>
+          <div class="form-group">
+            <textarea class="large" id="jdInput" placeholder="Paste the full job description here..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="analyzeJD()">Analyze &amp; Continue</button>
+        </div>
+        <!-- Step 2: Answer questions -->
+        <div class="jd-step hidden" id="jdStep2">
+          <h4>Step 2: Customize Your Pitch</h4>
+          <div id="jdQuestions"></div>
+          <button class="btn btn-primary" onclick="generatePitchFromJD()" style="margin-top:12px">Generate Pitch</button>
+        </div>
+        <!-- Step 3: Preview & save -->
+        <div class="jd-step hidden" id="jdStep3">
+          <div class="jd-generated">
+            <h4>Generated Pitch</h4>
+            <textarea class="large" id="jdGeneratedPitch" style="margin-top:8px"></textarea>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-secondary" onclick="document.getElementById('jdStep2').classList.remove('hidden');document.getElementById('jdStep3').classList.add('hidden')">Back to Questions</button>
+            <button class="btn btn-primary" onclick="saveJDPitch()">Save Pitch</button>
+          </div>
+        </div>
+      </div></div>
+    </div>
   </div></div>
 </div><!-- end flex row -->
 </div><!-- end flex col -->
@@ -224,14 +347,114 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
   <div class="studio-tabs">
     <button class="studio-tab" onclick="switchStudio('pitch')">Pitch Studio</button>
     <button class="studio-tab active" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab" onclick="switchStudio('people')">People</button>
     <button class="studio-tab" onclick="switchStudio('submission')">Submission Studio</button>
   </div>
-  <div class="main" style="flex:1">
-    <div class="coming-soon">
-      <div class="coming-soon-icon">&#128196;</div>
-      <h3>CV Studio</h3>
-      <p>Upload candidate CVs (PDF or Word), strip contact info, add the Tandym logo, and export clean branded PDFs. Coming soon.</p>
+  <div style="display:flex;flex:1;overflow:hidden">
+  <div class="sidebar">
+    <div class="sidebar-header"><h2>CV Studio</h2><p>Candidate resume library</p></div>
+    <div class="sidebar-actions">
+      <button class="btn btn-primary" onclick="showCVUpload()" style="flex:1">+ Upload CV</button>
+      <button class="btn btn-secondary" onclick="showCVExportAll()" title="Export All" style="padding:8px 10px">&#8599;</button>
     </div>
+    <div class="search-box"><input type="text" id="cvSearchInput" placeholder="Search CVs..." oninput="renderCVList()"></div>
+    <div class="cv-list" id="cvList"></div>
+    <div class="sidebar-stats"><span id="cvCount">0 CVs</span></div>
+  </div>
+  <div class="main"><div id="cvMainContent">
+    <!-- CV Empty state -->
+    <div class="empty-state" id="cvEmptyState">
+      <div class="empty-state-icon">&#128196;</div>
+      <h3>Welcome to CV Studio</h3>
+      <p>Upload candidate resumes and build your CV library. Supports .txt, .html, .md, and text-based files.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <button class="btn btn-primary" onclick="showCVUpload()">Upload CVs</button>
+      </div>
+    </div>
+    <!-- CV Upload view -->
+    <div class="hidden" id="cvUploadView">
+      <div class="main-header"><h2>Upload CVs</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelCVForm()">Back</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;line-height:1.6">Upload candidate resumes. Each file becomes one CV entry.</p>
+        <div class="drop-zone" id="cvDropZone"><h3>&#128196; Drop CVs here or click to browse</h3><p>Select multiple files</p><p style="font-size:11px;margin-top:8px">.txt .html .md .rtf .doc</p><input type="file" id="cvFileInput" multiple accept=".txt,.text,.html,.htm,.md,.rtf,.doc,.csv" onchange="handleCVUpload(event)"></div>
+        <div class="hidden file-results" id="cvUploadResults"><h4>Uploaded:</h4><ul id="cvUploadResultsList"></ul></div>
+      </div></div>
+    </div>
+    <!-- CV View -->
+    <div class="hidden" id="cvViewDetail">
+      <div class="main-header"><h2 id="cvViewHeader">View CV</h2><div class="header-actions">
+        <button class="btn btn-secondary btn-sm" onclick="copyCVText()">Copy Text</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCV()">Delete</button>
+      </div></div>
+      <div class="main-body"><div id="cvViewContent"></div></div>
+    </div>
+    <!-- CV Export -->
+    <div class="hidden" id="cvExportView">
+      <div class="main-header"><h2>Export All CVs</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelCVForm()">Back</button><button class="btn btn-primary btn-sm" onclick="copyCVExport()">Copy All</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <div class="export-block"><textarea id="cvExportArea" class="large" readonly></textarea></div>
+      </div></div>
+    </div>
+  </div></div>
+  </div>
+  </div>
+</div>
+
+<!-- ==================== PEOPLE ==================== -->
+<div class="studio-panel" id="panelPeople">
+  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+  <div class="studio-tabs">
+    <button class="studio-tab" onclick="switchStudio('pitch')">Pitch Studio</button>
+    <button class="studio-tab" onclick="switchStudio('cv')">CV Studio</button>
+    <button class="studio-tab active" onclick="switchStudio('people')">People</button>
+    <button class="studio-tab" onclick="switchStudio('submission')">Submission Studio</button>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden">
+  <div class="sidebar">
+    <div class="sidebar-header"><h2>People</h2><p>Candidate &amp; contact directory</p></div>
+    <div class="sidebar-actions">
+      <button class="btn btn-primary" onclick="showAddPerson()" style="flex:1">+ Add Person</button>
+      <button class="btn btn-secondary" onclick="showPeopleExport()" title="Export All" style="padding:8px 10px">&#8599;</button>
+    </div>
+    <div class="search-box"><input type="text" id="peopleSearchInput" placeholder="Search people..." oninput="renderPeopleList()"></div>
+    <div class="pitch-list" id="peopleList"></div>
+    <div class="sidebar-stats"><span id="peopleCount">0 people</span></div>
+  </div>
+  <div class="main"><div id="peopleMainContent">
+    <!-- People Empty state -->
+    <div class="empty-state" id="peopleEmptyState">
+      <div class="empty-state-icon">&#128101;</div>
+      <h3>People Directory</h3>
+      <p>Your candidate and contact database. People are auto-added when you upload CVs, or you can add them manually.</p>
+      <button class="btn btn-primary" onclick="showAddPerson()">Add a Person</button>
+    </div>
+    <!-- Add/Edit Person -->
+    <div class="hidden" id="personFormView">
+      <div class="main-header"><h2 id="personFormTitle">Add Person</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelPeopleForm()">Cancel</button><button class="btn btn-primary btn-sm" onclick="savePerson()">Save</button></div></div>
+      <div class="main-body"><div style="max-width:600px">
+        <div class="person-edit-row"><label>Name</label><input type="text" id="personName" placeholder="Full name"></div>
+        <div class="person-edit-row"><label>Specialty</label><input type="text" id="personSpecialty" placeholder="e.g. Healthcare, IT, Finance"></div>
+        <div class="person-edit-row"><label>Phone</label><input type="text" id="personPhone" placeholder="Phone number"></div>
+        <div class="person-edit-row"><label>Email</label><input type="text" id="personEmail" placeholder="Email address"></div>
+        <div class="person-edit-row"><label>Notes</label><input type="text" id="personNotes" placeholder="Optional notes"></div>
+      </div></div>
+    </div>
+    <!-- View Person -->
+    <div class="hidden" id="personViewDetail">
+      <div class="main-header"><h2 id="personViewHeader">View Person</h2><div class="header-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editPerson()">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePerson()">Delete</button>
+      </div></div>
+      <div class="main-body"><div class="person-detail" id="personViewContent"></div></div>
+    </div>
+    <!-- People Export -->
+    <div class="hidden" id="peopleExportView">
+      <div class="main-header"><h2>Export All People</h2><div class="header-actions"><button class="btn btn-secondary btn-sm" onclick="cancelPeopleForm()">Back</button><button class="btn btn-primary btn-sm" onclick="copyPeopleExport()">Copy All</button></div></div>
+      <div class="main-body"><div style="max-width:700px">
+        <div class="export-block"><textarea id="peopleExportArea" class="large" readonly></textarea></div>
+      </div></div>
+    </div>
+  </div></div>
   </div>
   </div>
 </div>
@@ -260,42 +483,85 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
 
 <script>
 /* ===== STATE ===== */
-let pitches=[],currentPitchId=null,editingPitchId=null,currentStudio='pitch';
+let pitches=[],currentPitchId=null,editingPitchId=null,currentStudio='pitch',editMode=false;
 let parsedData={subject:'',greeting:'',body:'',signoff:'',signature:'',raw:''};
+let activeTagFilter='';
+let cvs=[],currentCVId=null;
+let people=[],currentPersonId=null,editingPersonId=null;
+let jdData={raw:'',title:'',company:'',location:'',specialty:'',tone:'professional',approach:'opportunity',yourName:'',yourCompany:''};
 
 /* ===== NAV ===== */
 function switchStudio(id){
   currentStudio=id;
   document.querySelectorAll('.studio-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.studio-tab').forEach(t=>{t.classList.remove('active')});
   const panelId='panel'+id.charAt(0).toUpperCase()+id.slice(1);
-  document.getElementById(panelId).classList.add('active');
-  document.getElementById('nav'+id.charAt(0).toUpperCase()+id.slice(1)).classList.add('active');
+  const panel=document.getElementById(panelId);
+  if(panel)panel.classList.add('active');
+  const navBtn=document.getElementById('nav'+id.charAt(0).toUpperCase()+id.slice(1));
+  if(navBtn)navBtn.classList.add('active');
+  // Highlight correct tab in active panel
+  panel.querySelectorAll('.studio-tab').forEach(t=>{
+    if(t.textContent.toLowerCase().includes(id))t.classList.add('active');
+  });
 }
 
 /* ===== PERSISTENCE ===== */
-function load(){try{const r=localStorage.getItem('pitch_studio_data');if(r)pitches=JSON.parse(r)}catch(e){pitches=[]}render()}
+function load(){
+  try{const r=localStorage.getItem('pitch_studio_data');if(r)pitches=JSON.parse(r)}catch(e){pitches=[]}
+  try{const c=localStorage.getItem('cv_studio_data');if(c)cvs=JSON.parse(c)}catch(e){cvs=[]}
+  try{const p=localStorage.getItem('people_data');if(p)people=JSON.parse(p)}catch(e){people=[]}
+  render();renderCVList();renderPeopleList();
+}
 function save(){localStorage.setItem('pitch_studio_data',JSON.stringify(pitches));render()}
+function saveCVs(){localStorage.setItem('cv_studio_data',JSON.stringify(cvs));renderCVList()}
+function savePeople(){localStorage.setItem('people_data',JSON.stringify(people));renderPeopleList()}
 
 /* ===== RENDER PITCH LIST ===== */
 function render(){
   const l=document.getElementById('pitchList'),s=document.getElementById('searchInput').value.toLowerCase();
-  const f=pitches.filter(p=>!s||(p.subject+' '+p.role+' '+p.company+' '+p.body+' '+(p.tags||[]).join(' ')).toLowerCase().includes(s));
-  f.sort((a,b)=>b.created-a.created);
+  let f=pitches.filter(p=>{
+    const text=(p.subject+' '+p.role+' '+p.company+' '+p.body+' '+(p.tags||[]).join(' ')).toLowerCase();
+    if(s&&!text.includes(s))return false;
+    if(activeTagFilter&&!(p.tags||[]).includes(activeTagFilter))return false;
+    return true;
+  });
+  // Sort
+  const sort=document.getElementById('sortSelect').value;
+  if(sort==='newest')f.sort((a,b)=>b.created-a.created);
+  else if(sort==='oldest')f.sort((a,b)=>a.created-b.created);
+  else if(sort==='alpha')f.sort((a,b)=>(a.subject||'').localeCompare(b.subject||''));
+  else if(sort==='updated')f.sort((a,b)=>(b.updated||b.created)-(a.updated||a.created));
+
   if(!f.length&&!pitches.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No pitches yet.</div>';
   else if(!f.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No matches.</div>';
-  else l.innerHTML=f.map(p=>'<div class="pitch-item '+(p.id===currentPitchId?'active':'')+'" onclick="viewPitch(\''+p.id+'\')"><div class="pitch-item-title">'+esc(p.subject||'Untitled Pitch')+'</div><div class="pitch-item-meta"><span class="pitch-tag tag-pitch">pitch</span>'+(p.role?'<span>'+esc(p.role)+'</span>':'')+(p.company?'<span>'+esc(p.company)+'</span>':'')+'</div></div>').join('');
+  else l.innerHTML=f.map(p=>{
+    let tags='<span class="pitch-tag tag-pitch">pitch</span>';
+    if(p.tags)p.tags.forEach(t=>{tags+='<span class="pitch-tag tag-custom">'+esc(t)+'</span>'});
+    return '<div class="pitch-item '+(p.id===currentPitchId?'active':'')+'" onclick="viewPitch(\''+p.id+'\')"><div class="pitch-item-title">'+esc(p.subject||'Untitled Pitch')+'</div><div class="pitch-item-meta">'+tags+(p.role?'<span>'+esc(p.role)+'</span>':'')+'</div></div>';
+  }).join('');
   document.getElementById('pitchCount').textContent=pitches.length+' pitch'+(pitches.length!==1?'es':'');
+  renderTagFilterBar();
 }
 function filterPitches(){render()}
 
+function renderTagFilterBar(){
+  const bar=document.getElementById('tagFilterBar');
+  const allTags=[...new Set(pitches.flatMap(p=>p.tags||[]))].sort();
+  if(!allTags.length){bar.innerHTML='';return}
+  bar.innerHTML='<span class="tag-filter-chip '+(activeTagFilter?'':'active')+'" onclick="activeTagFilter=\'\';render()">All</span>'+
+    allTags.map(t=>'<span class="tag-filter-chip '+(activeTagFilter===t?'active':'')+'" onclick="activeTagFilter=\''+esc(t)+'\';render()">'+esc(t)+'</span>').join('');
+}
+
 /* ===== VIEW MANAGEMENT ===== */
-function showView(id){['emptyState','pasteNewView','viewPitchView','uploadView','exportAllView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function showView(id){['emptyState','pasteNewView','viewPitchView','uploadView','exportAllView','bulkPasteView','createJDView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
 function showPasteNew(){
-  editingPitchId=null;
+  editingPitchId=null;editMode=false;
   document.getElementById('pasteBox').value='';
   document.getElementById('parsedPreview').classList.add('hidden');
+  document.getElementById('dupeWarning').classList.add('hidden');
   parsedData={subject:'',greeting:'',body:'',signoff:'',signature:'',raw:''};
   showView('pasteNewView');
   document.getElementById('pasteBox').focus();
@@ -305,30 +571,45 @@ function showExportAll(){
   const t=pitches.map((p,i)=>{let o='=== PITCH '+(i+1)+' ===\n';if(p.subject)o+='Subject: '+p.subject+'\n';if(p.role)o+='Role: '+p.role+'\n';if(p.company)o+='Company: '+p.company+'\n';if(p.tags&&p.tags.length)o+='Tags: '+p.tags.join(', ')+'\n';o+='\n'+p.body+'\n';if(p.notes)o+='\nNotes: '+p.notes+'\n';return o}).join('\n---\n\n');
   document.getElementById('exportArea').value=t;document.getElementById('exportCharCount').textContent=t.length.toLocaleString()+' characters';showView('exportAllView');
 }
-function cancelForm(){pitches.length===0?showView('emptyState'):currentPitchId?viewPitch(currentPitchId):showView('emptyState')}
+function cancelForm(){editMode=false;pitches.length===0?showView('emptyState'):currentPitchId?viewPitch(currentPitchId):showView('emptyState')}
 
 /* ===== SMART PARSE ENGINE ===== */
 function smartParse(){
   const raw=document.getElementById('pasteBox').value;
-  if(!raw.trim()){document.getElementById('parsedPreview').classList.add('hidden');return}
+  if(!raw.trim()){document.getElementById('parsedPreview').classList.add('hidden');document.getElementById('dupeWarning').classList.add('hidden');return}
   parsedData=parsePitchEmail(raw);
   renderParsedPreview();
+  // Duplicate check
+  const isDupe=checkDuplicate(raw);
+  if(isDupe)document.getElementById('dupeWarning').classList.remove('hidden');
+  else document.getElementById('dupeWarning').classList.add('hidden');
+}
+
+function checkDuplicate(raw){
+  const clean=raw.trim().toLowerCase().replace(/\s+/g,' ');
+  for(const p of pitches){
+    if(editingPitchId&&p.id===editingPitchId)continue;
+    const existing=p.body.trim().toLowerCase().replace(/\s+/g,' ');
+    // Check if >80% similar (simple overlap check)
+    if(clean===existing)return true;
+    if(clean.length>50&&existing.length>50){
+      const shorter=clean.length<existing.length?clean:existing;
+      const longer=clean.length>=existing.length?clean:existing;
+      if(longer.includes(shorter.substring(0,Math.floor(shorter.length*0.8))))return true;
+    }
+  }
+  return false;
 }
 
 function parsePitchEmail(raw){
   const lines=raw.split('\n');
   let subject='',greeting='',body='',signoff='',signature='';
   let bodyStart=0,bodyEnd=lines.length;
-
-  // Detect subject line
   for(let i=0;i<Math.min(lines.length,5);i++){
     const l=lines[i].trim();
     if(/^(subject|subj|re|fwd)[\s]*:/i.test(l)){subject=l.replace(/^(subject|subj|re|fwd)[\s]*:/i,'').trim();bodyStart=i+1;break}
   }
-  // Skip blank lines after subject
   while(bodyStart<lines.length&&!lines[bodyStart].trim())bodyStart++;
-
-  // Detect greeting (first non-empty line after subject)
   if(bodyStart<lines.length){
     const gl=lines[bodyStart].trim();
     if(/^(hi|hey|hello|dear|good\s*(morning|afternoon|evening))/i.test(gl)||(gl.endsWith(',')&&gl.length<80)){
@@ -336,25 +617,16 @@ function parsePitchEmail(raw){
       while(bodyStart<lines.length&&!lines[bodyStart].trim())bodyStart++;
     }
   }
-
-  // Detect signature block (from bottom up)
   const sigPatterns=[/^(best|regards|thanks|thank\s*you|sincerely|cheers|warm\s*regards|kind\s*regards|all\s*the\s*best)/i,/^(sent\s*from|get\s*outlook)/i,/^-{2,}$/,/^_{2,}$/];
   for(let i=lines.length-1;i>bodyStart;i--){
     const l=lines[i].trim();
     if(!l)continue;
     for(const pat of sigPatterns){
-      if(pat.test(l)){
-        signoff=l;
-        signature=lines.slice(i+1).map(x=>x).join('\n').trim();
-        bodyEnd=i;
-        while(bodyEnd>bodyStart&&!lines[bodyEnd-1].trim())bodyEnd--;
-        break;
-      }
+      if(pat.test(l)){signoff=l;signature=lines.slice(i+1).join('\n').trim();bodyEnd=i;while(bodyEnd>bodyStart&&!lines[bodyEnd-1].trim())bodyEnd--;break}
     }
     if(signoff)break;
     if(lines.length-1-i>12)break;
   }
-
   body=lines.slice(bodyStart,bodyEnd).join('\n').trim();
   return{subject,greeting,body:body||raw.trim(),signoff,signature,raw};
 }
@@ -373,14 +645,11 @@ function renderParsedPreview(){
 }
 
 /* ===== AUTO TITLE GENERATOR ===== */
-/* Format: Specialty-Town,State-Date  OR  Specialty-(Multiple Locations),State-Date */
 function generatePitchTitle(role,company,parsed){
   const now=new Date();
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dateStr=months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
   const text=(parsed?(parsed.subject||'')+' '+(parsed.body||''):'');
-
-  // Detect specialty/field from content
   let specialty='';
   const specPatterns=[
     /(?:speciali[sz](?:e|ing|ation)|focus(?:ed|ing)?|field|area|practice|division|department|team|group)[\s:]+(?:in\s+)?([A-Za-z\/&\s]+?)(?:[,.\n]|$)/i,
@@ -389,18 +658,12 @@ function generatePitchTitle(role,company,parsed){
   const specMatch1=text.match(specPatterns[0]);
   if(specMatch1)specialty=specMatch1[1].trim();
   if(!specialty){const specMatch2=text.match(specPatterns[1]);if(specMatch2)specialty=specMatch2[0].trim()}
-  if(!specialty&&role){
-    const roleWords=role.split(/\s+/);
-    if(roleWords.length<=4)specialty=role;
-    else specialty=roleWords.slice(0,3).join(' ');
-  }
+  if(!specialty&&role){const rw=role.split(/\s+/);specialty=rw.length<=4?role:rw.slice(0,3).join(' ')}
   if(specialty&&specialty.length>30)specialty=specialty.substring(0,27)+'...';
-
-  // Detect locations (City, ST patterns)
   const locPattern=/\b([A-Z][a-zA-Z\s.]+),\s*([A-Z]{2})\b/g;
   const locations=[];let locMatch;
   while((locMatch=locPattern.exec(text))!==null){
-    const city=locMatch[1].trim();const st=locMatch[2];
+    const city=locMatch[1].trim(),st=locMatch[2];
     if(city.length>1&&city.length<30&&!/^(Subject|From|To|Date|Re|Fwd)$/i.test(city)){
       const key=city+', '+st;
       if(!locations.find(l=>l.key===key))locations.push({city,state:st,key})
@@ -408,12 +671,7 @@ function generatePitchTitle(role,company,parsed){
   }
   let locationStr='';
   if(locations.length===1)locationStr=locations[0].city+', '+locations[0].state;
-  else if(locations.length>1){
-    const states=[...new Set(locations.map(l=>l.state))];
-    locationStr='(Multiple Locations), '+states.join('/');
-  }
-
-  // Build title: Specialty-Location-Date
+  else if(locations.length>1){const states=[...new Set(locations.map(l=>l.state))];locationStr='(Multiple Locations), '+states.join('/')}
   let parts=[];
   if(specialty)parts.push(specialty);
   if(locationStr)parts.push(locationStr);
@@ -421,60 +679,158 @@ function generatePitchTitle(role,company,parsed){
   return parts.join(' \u2013 ');
 }
 
+function extractRoleCompany(text){
+  let role='',company='';
+  const roleMatch=text.match(/(?:role|position|opportunity)[\s:]*(?:for\s+(?:a|an)\s+)?([A-Z][A-Za-z\s\/]+(?:Engineer|Developer|Manager|Designer|Analyst|Director|Lead|Architect|Consultant|Specialist|Coordinator|Associate|VP|Recruiter))/i);
+  if(roleMatch)role=roleMatch[1].trim();
+  const compMatch=text.match(/(?:at|with|for|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n]|$)/);
+  if(compMatch&&compMatch[1].trim().length<60)company=compMatch[1].trim();
+  return{role,company};
+}
+
+/* ===== RE-TITLE ALL PITCHES (runs silently on load) ===== */
+function retitleAll(){
+  if(!pitches.length)return;
+  let changed=false;
+  pitches.forEach(p=>{
+    // Skip pitches that already have a well-formed auto-title (contains date pattern like "Mon D, YYYY")
+    if(p.subject&&/[A-Z][a-z]{2}\s+\d{1,2},\s+\d{4}/.test(p.subject))return;
+    const d=parsePitchEmail(p.body);
+    const{role,company}=extractRoleCompany((d.subject||'')+' '+(d.body||''));
+    const newTitle=generatePitchTitle(role,company,d);
+    p.subject=newTitle;p.role=role||p.role;p.company=company||p.company;p.updated=Date.now();
+    changed=true;
+  });
+  if(changed)save();
+}
+
 /* ===== SAVE FROM PASTE ===== */
 function saveFromPaste(){
   const raw=document.getElementById('pasteBox').value.trim();
   if(!raw){alert('Paste a pitch first.');return}
   const d=parsePitchEmail(raw);
-
-  let role='',company='';
-  const roleMatch=(d.subject+' '+d.body).match(/(?:role|position|opportunity)[\s:]*(?:for\s+(?:a|an)\s+)?([A-Z][A-Za-z\s\/]+(?:Engineer|Developer|Manager|Designer|Analyst|Director|Lead|Architect|Consultant|Specialist|Coordinator|Associate|VP|Recruiter))/i);
-  if(roleMatch)role=roleMatch[1].trim();
-  const compMatch=(d.subject+' '+d.body).match(/(?:at|with|for|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n]|$)/);
-  if(compMatch&&compMatch[1].trim().length<60)company=compMatch[1].trim();
-
-  const fullBody=raw;
+  const{role,company}=extractRoleCompany((d.subject||'')+' '+(d.body||''));
   const title=generatePitchTitle(role,company,d);
 
   if(editingPitchId){
     const i=pitches.findIndex(p=>p.id===editingPitchId);
-    if(i>=0){pitches[i]={...pitches[i],subject:pitches[i].subject,role,company,body:fullBody,signature:d.signature,greeting:d.greeting,signoff:d.signoff,updated:Date.now()};currentPitchId=editingPitchId}
+    if(i>=0){pitches[i]={...pitches[i],role,company,body:raw,signature:d.signature,greeting:d.greeting,signoff:d.signoff,updated:Date.now()};currentPitchId=editingPitchId}
   }else{
-    const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:title,role,company,tags:[],body:fullBody,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'',created:Date.now(),updated:Date.now()};
+    const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:title,role,company,tags:[],body:raw,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'',created:Date.now(),updated:Date.now()};
     pitches.push(p);currentPitchId=p.id;
   }
   save();viewPitch(currentPitchId);
 }
 
-/* ===== VIEW / EDIT / DELETE PITCH ===== */
+/* ===== VIEW PITCH (with inline edit) ===== */
 function viewPitch(id){
   const p=pitches.find(x=>x.id===id);if(!p)return;
-  currentPitchId=id;
-  let html='<div class="subject-line">'+esc(p.subject||'Untitled Pitch')+'</div>';
-  html+='<div class="meta-row">';
-  if(p.role)html+='<span><strong>Role:</strong> '+esc(p.role)+'</span>';
-  if(p.company)html+='<span><strong>Company:</strong> '+esc(p.company)+'</span>';
-  html+='<span><strong>Added:</strong> '+new Date(p.created).toLocaleDateString()+'</span>';
-  if(p.tags&&p.tags.length)html+='<span><strong>Tags:</strong> '+p.tags.map(t=>esc(t)).join(', ')+'</span>';
-  html+='</div>';
+  currentPitchId=id;editMode=false;
+  document.getElementById('btnEditMode').textContent='Edit Details';
+  renderPitchView(p);
+  showView('viewPitchView');render();
+}
+
+function renderPitchView(p){
+  if(!p)p=pitches.find(x=>x.id===currentPitchId);if(!p)return;
+  let html='';
+  if(editMode){
+    html+='<input type="text" class="inline-edit inline-edit-title" id="editTitle" value="'+esc(p.subject||'')+'" placeholder="Pitch title...">';
+    html+='<div class="meta-row">';
+    html+='<span><strong>Role:</strong> <input type="text" class="inline-edit inline-edit-sm" id="editRole" value="'+esc(p.role||'')+'" placeholder="Role..."></span>';
+    html+='<span><strong>Company:</strong> <input type="text" class="inline-edit inline-edit-sm" id="editCompany" value="'+esc(p.company||'')+'" placeholder="Company..."></span>';
+    html+='<span><strong>Added:</strong> '+new Date(p.created).toLocaleDateString()+'</span>';
+    html+='</div>';
+    // Tags with inline management
+    html+='<div style="margin-bottom:16px"><strong style="font-size:12px;color:var(--text-dim);text-transform:uppercase">Tags</strong><div class="tag-chips">';
+    (p.tags||[]).forEach(t=>{html+='<span class="tag-chip">'+esc(t)+' <span class="remove-tag" onclick="removeTag(\''+esc(t)+'\')">&times;</span></span>'});
+    html+='<input type="text" class="tag-add-input" id="tagInput" placeholder="+ Add tag" onkeydown="if(event.key===\'Enter\'){addTag();event.preventDefault()}">';
+    html+='</div></div>';
+  }else{
+    html+='<div class="subject-line">'+esc(p.subject||'Untitled Pitch')+'</div>';
+    html+='<div class="meta-row">';
+    if(p.role)html+='<span><strong>Role:</strong> '+esc(p.role)+'</span>';
+    if(p.company)html+='<span><strong>Company:</strong> '+esc(p.company)+'</span>';
+    html+='<span><strong>Added:</strong> '+new Date(p.created).toLocaleDateString()+'</span>';
+    if(p.tags&&p.tags.length)html+='<span><strong>Tags:</strong> '+p.tags.map(t=>'<span class="pitch-tag tag-custom">'+esc(t)+'</span>').join(' ')+'</span>';
+    html+='</div>';
+  }
   html+='<div class="pitch-body">'+esc(p.body)+'</div>';
   if(p.notes)html+='<div style="margin-top:16px"><strong style="font-size:12px;color:var(--text-dim);text-transform:uppercase">Notes</strong><p style="margin-top:6px;font-size:14px;color:var(--text-dim);line-height:1.6">'+esc(p.notes)+'</p></div>';
   document.getElementById('pitchViewContent').innerHTML=html;
-  showView('viewPitchView');render();
+}
+
+function toggleEditMode(){
+  const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;
+  if(editMode){
+    // Save inline edits
+    const t=document.getElementById('editTitle');
+    const r=document.getElementById('editRole');
+    const c=document.getElementById('editCompany');
+    if(t)p.subject=t.value.trim()||p.subject;
+    if(r)p.role=r.value.trim();
+    if(c)p.company=c.value.trim();
+    p.updated=Date.now();
+    save();
+    editMode=false;
+    document.getElementById('btnEditMode').textContent='Edit Details';
+  }else{
+    editMode=true;
+    document.getElementById('btnEditMode').textContent='Save Details';
+  }
+  renderPitchView(p);
+}
+
+function addTag(){
+  const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;
+  const input=document.getElementById('tagInput');
+  const tag=input.value.trim().toLowerCase();
+  if(!tag)return;
+  if(!p.tags)p.tags=[];
+  if(!p.tags.includes(tag)){p.tags.push(tag);p.updated=Date.now();save()}
+  renderPitchView(p);
+}
+
+function removeTag(tag){
+  const p=pitches.find(x=>x.id===currentPitchId);if(!p||!p.tags)return;
+  p.tags=p.tags.filter(t=>t!==tag);
+  p.updated=Date.now();save();
+  renderPitchView(p);
 }
 
 function editPitchInPaste(){
   const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;
   editingPitchId=p.id;
   document.getElementById('pasteBox').value=p.body||'';
-  smartParse();
-  showView('pasteNewView');
+  smartParse();showView('pasteNewView');
 }
 
 function deletePitch(){if(!confirm('Delete this pitch?'))return;pitches=pitches.filter(p=>p.id!==currentPitchId);currentPitchId=null;save();pitches.length>0?viewPitch(pitches[0].id):showView('emptyState')}
 
 function copyPitch(){const p=pitches.find(x=>x.id===currentPitchId);if(!p)return;let t='';if(p.subject)t+='Subject: '+p.subject+'\n\n';t+=p.body;navigator.clipboard.writeText(t).then(()=>toast('Copied to clipboard!'))}
 function copyExport(){navigator.clipboard.writeText(document.getElementById('exportArea').value).then(()=>toast('All pitches copied!'))}
+
+/* ===== BULK PASTE ===== */
+function showBulkPaste(){document.getElementById('bulkPasteArea').value='';showView('bulkPasteView')}
+function processBulkPaste(){
+  const raw=document.getElementById('bulkPasteArea').value.trim();
+  if(!raw){alert('Please paste some pitches first.');return}
+  const chunks=raw.split(/\n\s*(?:---+|===+)\s*\n/).filter(c=>c.trim());
+  let added=0;
+  for(const chunk of chunks){
+    const trimmed=chunk.trim();
+    if(!trimmed||trimmed.length<20)continue;
+    const d=parsePitchEmail(trimmed);
+    const{role,company}=extractRoleCompany((d.subject||'')+' '+(d.body||''));
+    const title=generatePitchTitle(role,company,d);
+    if(checkDuplicate(trimmed))continue; // Skip duplicates
+    pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+added,subject:title,role,company,tags:[],body:trimmed,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Added via bulk paste',created:Date.now(),updated:Date.now()});
+    added++;
+  }
+  if(added===0){alert('No new pitches found. They may be duplicates or too short.');return}
+  save();toast(added+' pitch'+(added!==1?'es':'')+' added!');
+  if(pitches.length>0)viewPitch(pitches[pitches.length-1].id);
+}
 
 /* ===== FILE UPLOAD ===== */
 function handleFileUpload(event){
@@ -485,29 +841,333 @@ function handleFileUpload(event){
       let text=e.target.result;
       if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
       const d=parsePitchEmail(text);
-      let fRole='',fCompany='';
-      const fRoleMatch=(d.subject+' '+d.body).match(/(?:role|position|opportunity)[\s:]*(?:for\s+(?:a|an)\s+)?([A-Z][A-Za-z\s\/]+(?:Engineer|Developer|Manager|Designer|Analyst|Director|Lead|Architect|Consultant|Specialist|Coordinator|Associate|VP|Recruiter))/i);
-      if(fRoleMatch)fRole=fRoleMatch[1].trim();
-      const fCompMatch=(d.subject+' '+d.body).match(/(?:at|with|for|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n]|$)/);
-      if(fCompMatch&&fCompMatch[1].trim().length<60)fCompany=fCompMatch[1].trim();
-      const subject=generatePitchTitle(fRole,fCompany,d);
-      pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject,role:fRole,company:fCompany,tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
+      const{role,company}=extractRoleCompany((d.subject||'')+' '+(d.body||''));
+      const subject=generatePitchTitle(role,company,d);
+      if(!checkDuplicate(text)){
+        pitches.push({id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,subject:subject,role,company,tags:[],body:text.trim(),signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Uploaded from: '+file.name,created:Date.now(),updated:Date.now()});
+      }
       results.push(file.name);processed++;
-      if(processed===files.length){save();const rl=document.getElementById('uploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('uploadResults').classList.remove('hidden')}toast(processed+' file'+(processed!==1?'s':'')+' uploaded!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
+      if(processed===files.length){save();const rl=document.getElementById('uploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('uploadResults').classList.remove('hidden')}toast(processed+' file'+(processed!==1?'s':'')+' processed!');if(pitches.length>0)viewPitch(pitches[pitches.length-1].id)}
     };reader.readAsText(file)});
 }
 
-/* ===== DRAG & DROP ===== */
+/* ===== DRAG & DROP (PITCH) ===== */
 const dz=document.getElementById('dropZone');
 if(dz){dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const input=document.getElementById('fileUploadInput');const dt=new DataTransfer();Array.from(e.dataTransfer.files).forEach(f=>dt.items.add(f));input.files=dt.files;handleFileUpload({target:input})})}
+
+/* ===== CREATE FROM JD ===== */
+function showCreateFromJD(){
+  jdData={raw:'',title:'',company:'',location:'',specialty:'',tone:'professional',approach:'opportunity',yourName:'',yourCompany:''};
+  document.getElementById('jdInput').value='';
+  document.getElementById('jdStep1').classList.remove('hidden');
+  document.getElementById('jdStep2').classList.add('hidden');
+  document.getElementById('jdStep3').classList.add('hidden');
+  showView('createJDView');
+}
+
+function analyzeJD(){
+  const raw=document.getElementById('jdInput').value.trim();
+  if(!raw){alert('Please paste a job description first.');return}
+  jdData.raw=raw;
+
+  // Extract info from JD
+  const titleMatch=raw.match(/(?:job\s*title|position|role)[\s:]+([^\n]+)/i)||raw.match(/^([A-Z][^\n]{5,60})/m);
+  jdData.title=titleMatch?titleMatch[1].trim():'';
+  const compMatch=raw.match(/(?:company|organization|employer|about\s+us)[\s:]+([^\n]+)/i)||raw.match(/(?:at|with|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n])/);
+  jdData.company=compMatch?compMatch[1].trim():'';
+  const locMatch=raw.match(/(?:location|based\s+in|office)[\s:]+([^\n]+)/i);
+  jdData.location=locMatch?locMatch[1].trim():'';
+  const specMatch=raw.match(/(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Pharmaceutical|Life Sciences)/i);
+  jdData.specialty=specMatch?specMatch[0]:'';
+
+  // Build questions UI
+  let qhtml='';
+  qhtml+='<div class="form-group"><label>Role Title (detected)</label><input type="text" id="jdTitle" value="'+esc(jdData.title)+'" placeholder="e.g. Senior Software Engineer"></div>';
+  qhtml+='<div class="form-group"><label>Company</label><input type="text" id="jdCompany" value="'+esc(jdData.company)+'" placeholder="e.g. Acme Corp"></div>';
+  qhtml+='<div class="form-group"><label>Location</label><input type="text" id="jdLocation" value="'+esc(jdData.location)+'" placeholder="e.g. New York, NY"></div>';
+  qhtml+='<div class="form-group"><label>Your Name</label><input type="text" id="jdYourName" value="'+esc(jdData.yourName)+'" placeholder="Your name for sign-off"></div>';
+  qhtml+='<div class="form-group"><label>Your Company / Agency</label><input type="text" id="jdYourCompany" value="'+esc(jdData.yourCompany)+'" placeholder="Your recruiting firm"></div>';
+  qhtml+='<div class="form-group"><label>Pitch Tone</label><div class="jd-options" id="jdToneOptions">';
+  ['Professional','Casual','Enthusiastic','Direct'].forEach(t=>{
+    qhtml+='<span class="jd-option'+(t.toLowerCase()===jdData.tone?' selected':'')+'" onclick="selectJDOption(\'tone\',\''+t.toLowerCase()+'\',this)">'+t+'</span>';
+  });
+  qhtml+='</div></div>';
+  qhtml+='<div class="form-group"><label>Pitch Approach</label><div class="jd-options" id="jdApproachOptions">';
+  ['Opportunity Focused','Candidate Focused','Company Culture','Compensation Highlight','Growth Path'].forEach(a=>{
+    const val=a.toLowerCase().replace(/\s+/g,'-');
+    qhtml+='<span class="jd-option'+(val===jdData.approach?' selected':'')+'" onclick="selectJDOption(\'approach\',\''+val+'\',this)">'+a+'</span>';
+  });
+  qhtml+='</div></div>';
+  qhtml+='<div class="form-group"><label>Key Selling Points (optional)</label><textarea id="jdSellingPoints" rows="3" placeholder="What makes this role/company special? Any specific perks or highlights to mention?"></textarea></div>';
+
+  document.getElementById('jdQuestions').innerHTML=qhtml;
+  document.getElementById('jdStep1').classList.add('hidden');
+  document.getElementById('jdStep2').classList.remove('hidden');
+}
+
+function selectJDOption(field,value,el){
+  jdData[field]=value;
+  el.parentElement.querySelectorAll('.jd-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function generatePitchFromJD(){
+  const title=document.getElementById('jdTitle').value.trim();
+  const company=document.getElementById('jdCompany').value.trim();
+  const location=document.getElementById('jdLocation').value.trim();
+  const yourName=document.getElementById('jdYourName').value.trim();
+  const yourCompany=document.getElementById('jdYourCompany').value.trim();
+  const sellingPoints=document.getElementById('jdSellingPoints').value.trim();
+  const tone=jdData.tone;
+  const approach=jdData.approach;
+
+  // Build greeting based on tone
+  let greeting='Hi there,';
+  if(tone==='professional')greeting='Dear Hiring Professional,';
+  else if(tone==='casual')greeting='Hey there!';
+  else if(tone==='enthusiastic')greeting='Hi there!';
+  else if(tone==='direct')greeting='Hello,';
+
+  // Build opening line based on approach
+  let opening='';
+  if(approach==='opportunity-focused')opening='I came across '+(title?'the '+title+' role':'an exciting opportunity')+(company?' at '+company:'')+' and wanted to reach out about some exceptional candidates in our network.';
+  else if(approach==='candidate-focused')opening='I\'m reaching out because I have a strong candidate who would be an excellent fit for '+(title?'the '+title+' position':'your open role')+(company?' at '+company:'')+'.';
+  else if(approach==='company-culture')opening='I\'ve been following '+(company?company+'\'s':'your company\'s')+' growth and believe '+(title?'the '+title+' role':'this opportunity')+' would attract top talent from our network.';
+  else if(approach==='compensation-highlight')opening='I wanted to connect regarding '+(title?'the '+title+' opportunity':'your open position')+(company?' at '+company:'')+'. The compensation package and benefits make this a highly attractive role for top candidates.';
+  else if(approach==='growth-path')opening='I noticed '+(company?company+' is':'you\'re')+' looking for '+(title?'a '+title:'talent')+' and wanted to share some candidates who are specifically seeking growth opportunities'+(location?' in '+location:'')+'.';
+  else opening='I wanted to reach out regarding '+(title?'the '+title+' opportunity':'your open position')+(company?' at '+company:'')+'.';
+
+  // Build body
+  let body=greeting+'\n\n'+opening+'\n\n';
+  if(sellingPoints)body+='A few things that stood out about this role:\n'+sellingPoints.split('\n').map(l=>l.trim()).filter(l=>l).map(l=>'- '+l).join('\n')+'\n\n';
+  body+='I\'d love to schedule a quick call to discuss the role requirements and share some candidate profiles.'+(location?' We have strong talent in the '+location+' market.':'')+'\n\n';
+  body+='Would you have 15 minutes this week to connect?\n\n';
+  if(tone==='casual')body+='Looking forward to hearing from you!\n\n';
+  else if(tone==='enthusiastic')body+='Really excited about this opportunity and look forward to connecting!\n\n';
+  else body+='Thank you for your time and consideration.\n\n';
+  body+='Best regards,\n';
+  if(yourName)body+=yourName+'\n';
+  if(yourCompany)body+=yourCompany;
+
+  document.getElementById('jdGeneratedPitch').value=body;
+  document.getElementById('jdStep2').classList.add('hidden');
+  document.getElementById('jdStep3').classList.remove('hidden');
+}
+
+function saveJDPitch(){
+  const body=document.getElementById('jdGeneratedPitch').value.trim();
+  if(!body){alert('No pitch to save.');return}
+  const d=parsePitchEmail(body);
+  const title=document.getElementById('jdTitle')?.value||'';
+  const company=document.getElementById('jdCompany')?.value||'';
+  const{role}=extractRoleCompany(title+' '+body);
+  const autoTitle=generatePitchTitle(role||title,company,d);
+  const p={id:'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),subject:autoTitle,role:role||title,company,tags:['created-from-jd'],body,signature:d.signature||'',greeting:d.greeting||'',signoff:d.signoff||'',notes:'Created from job description',created:Date.now(),updated:Date.now()};
+  pitches.push(p);currentPitchId=p.id;
+  save();viewPitch(p.id);toast('Pitch created from JD!');
+}
+
+/* ================================================================ */
+/* ==================== CV STUDIO LOGIC ========================== */
+/* ================================================================ */
+
+function showCVView(id){['cvEmptyState','cvUploadView','cvViewDetail','cvExportView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function showCVUpload(){document.getElementById('cvUploadResults').classList.add('hidden');showCVView('cvUploadView')}
+function cancelCVForm(){cvs.length===0?showCVView('cvEmptyState'):currentCVId?viewCV(currentCVId):showCVView('cvEmptyState')}
+
+function showCVExportAll(){
+  const t=cvs.map((c,i)=>'=== CV '+(i+1)+' ===\nName: '+(c.name||'Unknown')+'\n\n'+c.body).join('\n\n---\n\n');
+  document.getElementById('cvExportArea').value=t;showCVView('cvExportView');
+}
+function copyCVExport(){navigator.clipboard.writeText(document.getElementById('cvExportArea').value).then(()=>toast('All CVs copied!'))}
+
+function renderCVList(){
+  const l=document.getElementById('cvList'),s=document.getElementById('cvSearchInput').value.toLowerCase();
+  const f=cvs.filter(c=>!s||(c.name+' '+c.body).toLowerCase().includes(s));
+  f.sort((a,b)=>b.created-a.created);
+  if(!f.length&&!cvs.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No CVs yet.</div>';
+  else if(!f.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No matches.</div>';
+  else l.innerHTML=f.map(c=>'<div class="cv-item '+(c.id===currentCVId?'active':'')+'" onclick="viewCV(\''+c.id+'\')"><div class="cv-item-title">'+esc(c.name||'Unnamed CV')+'</div><div class="cv-item-meta">'+new Date(c.created).toLocaleDateString()+(c.source?' &middot; '+esc(c.source):'')+'</div></div>').join('');
+  document.getElementById('cvCount').textContent=cvs.length+' CV'+(cvs.length!==1?'s':'');
+}
+
+function extractCVName(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  // First non-empty line that looks like a name (2-4 words, capitalized)
+  for(let i=0;i<Math.min(lines.length,5);i++){
+    const l=lines[i];
+    if(/^[A-Z][a-zA-Z]+(\s+[A-Z][a-zA-Z]+){0,3}$/.test(l)&&l.length<50)return l;
+    if(/^name[\s:]+(.+)/i.test(l))return l.replace(/^name[\s:]+/i,'').trim();
+  }
+  // Fallback: first line if short enough
+  if(lines[0]&&lines[0].length<60)return lines[0];
+  return 'Unnamed CV';
+}
+
+function handleCVUpload(event){
+  const files=Array.from(event.target.files);if(!files.length)return;
+  const results=[];let processed=0,dupeSkipped=0;
+  files.forEach(file=>{
+    const reader=new FileReader();reader.onload=function(e){
+      let text=e.target.result;
+      if(file.name.endsWith('.html')||file.name.endsWith('.htm')){const div=document.createElement('div');div.innerHTML=text;text=div.textContent||div.innerText||text}
+      const name=extractCVName(text);
+      // CV duplicate check (by filename or near-identical content)
+      const isDupeCv=cvs.some(c=>c.source===file.name||c.body.trim().toLowerCase()===text.trim().toLowerCase());
+      if(!isDupeCv){
+        const cvId='cv_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed;
+        cvs.push({id:cvId,name,body:text.trim(),source:file.name,created:Date.now(),updated:Date.now()});
+        // Auto-extract contact info and add to People
+        const contact=extractContactFromCV(text,name);
+        if(contact.name&&!isPersonDuplicate(contact.name,contact.email)){
+          people.push({id:'per_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+processed,name:contact.name,specialty:contact.specialty,phone:contact.phone,email:contact.email,notes:'Auto-added from CV: '+file.name,cvId:cvId,created:Date.now(),updated:Date.now()});
+        }
+        results.push(file.name);
+      }else{dupeSkipped++}
+      processed++;
+      if(processed===files.length){saveCVs();savePeople();const rl=document.getElementById('cvUploadResultsList');if(rl){rl.innerHTML=results.map(n=>'<li>'+esc(n)+'</li>').join('');document.getElementById('cvUploadResults').classList.remove('hidden')}let msg=results.length+' CV'+(results.length!==1?'s':'')+' uploaded!';if(dupeSkipped)msg+=' ('+dupeSkipped+' duplicate'+(dupeSkipped!==1?'s':'')+' skipped)';toast(msg);if(cvs.length>0)viewCV(cvs[cvs.length-1].id)}
+    };reader.readAsText(file)});
+}
+
+/* ===== CONTACT EXTRACTION FROM CV ===== */
+function extractContactFromCV(text,fallbackName){
+  const info={name:fallbackName||'',email:'',phone:'',specialty:''};
+  // Email
+  const emailMatch=text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+  if(emailMatch)info.email=emailMatch[0];
+  // Phone (various formats)
+  const phoneMatch=text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
+  if(phoneMatch)info.phone=phoneMatch[0].trim();
+  // Specialty detection
+  const specMatch=text.match(/(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Administrative|Creative|Design|Operations|Supply Chain|Logistics|Manufacturing|Pharmaceutical|Life Sciences|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Retail|Hospitality)/i);
+  if(specMatch)info.specialty=specMatch[0];
+  return info;
+}
+
+function isPersonDuplicate(name,email){
+  const nameLower=(name||'').trim().toLowerCase();
+  const emailLower=(email||'').trim().toLowerCase();
+  return people.some(p=>{
+    if(emailLower&&p.email&&p.email.trim().toLowerCase()===emailLower)return true;
+    if(nameLower&&p.name&&p.name.trim().toLowerCase()===nameLower)return true;
+    return false;
+  });
+}
+
+function viewCV(id){
+  const c=cvs.find(x=>x.id===id);if(!c)return;
+  currentCVId=id;
+  document.getElementById('cvViewHeader').textContent=c.name||'Unnamed CV';
+  document.getElementById('cvViewContent').innerHTML='<div class="cv-preview">'+esc(c.body)+'</div>';
+  showCVView('cvViewDetail');renderCVList();
+}
+
+function copyCVText(){const c=cvs.find(x=>x.id===currentCVId);if(!c)return;navigator.clipboard.writeText(c.body).then(()=>toast('CV copied!'))}
+function deleteCV(){if(!confirm('Delete this CV?'))return;cvs=cvs.filter(c=>c.id!==currentCVId);currentCVId=null;saveCVs();cvs.length>0?viewCV(cvs[0].id):showCVView('cvEmptyState')}
+
+/* CV Drag & Drop */
+const cvDz=document.getElementById('cvDropZone');
+if(cvDz){cvDz.addEventListener('dragover',e=>{e.preventDefault();cvDz.classList.add('dragover')});cvDz.addEventListener('dragleave',()=>cvDz.classList.remove('dragover'));cvDz.addEventListener('drop',e=>{e.preventDefault();cvDz.classList.remove('dragover');const input=document.getElementById('cvFileInput');const dt=new DataTransfer();Array.from(e.dataTransfer.files).forEach(f=>dt.items.add(f));input.files=dt.files;handleCVUpload({target:input})})}
+
+/* ================================================================ */
+/* ==================== PEOPLE LOGIC ============================= */
+/* ================================================================ */
+
+function showPeopleView(id){['peopleEmptyState','personFormView','personViewDetail','peopleExportView'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function cancelPeopleForm(){editingPersonId=null;people.length===0?showPeopleView('peopleEmptyState'):currentPersonId?viewPerson(currentPersonId):showPeopleView('peopleEmptyState')}
+
+function showAddPerson(){
+  editingPersonId=null;
+  document.getElementById('personFormTitle').textContent='Add Person';
+  document.getElementById('personName').value='';
+  document.getElementById('personSpecialty').value='';
+  document.getElementById('personPhone').value='';
+  document.getElementById('personEmail').value='';
+  document.getElementById('personNotes').value='';
+  showPeopleView('personFormView');
+  document.getElementById('personName').focus();
+}
+
+function editPerson(){
+  const p=people.find(x=>x.id===currentPersonId);if(!p)return;
+  editingPersonId=p.id;
+  document.getElementById('personFormTitle').textContent='Edit Person';
+  document.getElementById('personName').value=p.name||'';
+  document.getElementById('personSpecialty').value=p.specialty||'';
+  document.getElementById('personPhone').value=p.phone||'';
+  document.getElementById('personEmail').value=p.email||'';
+  document.getElementById('personNotes').value=p.notes||'';
+  showPeopleView('personFormView');
+}
+
+function savePerson(){
+  const name=document.getElementById('personName').value.trim();
+  if(!name){alert('Name is required.');return}
+  const email=document.getElementById('personEmail').value.trim();
+  const specialty=document.getElementById('personSpecialty').value.trim();
+  const phone=document.getElementById('personPhone').value.trim();
+  const notes=document.getElementById('personNotes').value.trim();
+
+  if(editingPersonId){
+    const i=people.findIndex(p=>p.id===editingPersonId);
+    if(i>=0){people[i]={...people[i],name,specialty,phone,email,notes,updated:Date.now()};currentPersonId=editingPersonId}
+  }else{
+    // Duplicate check
+    if(isPersonDuplicate(name,email)){
+      if(!confirm('A person with this name or email already exists. Add anyway?'))return;
+    }
+    const p={id:'per_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),name,specialty,phone,email,notes,cvId:null,created:Date.now(),updated:Date.now()};
+    people.push(p);currentPersonId=p.id;
+  }
+  editingPersonId=null;
+  savePeople();viewPerson(currentPersonId);
+}
+
+function renderPeopleList(){
+  const l=document.getElementById('peopleList'),s=document.getElementById('peopleSearchInput').value.toLowerCase();
+  const f=people.filter(p=>!s||(p.name+' '+p.specialty+' '+p.email+' '+p.phone+' '+p.notes).toLowerCase().includes(s));
+  f.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!f.length&&!people.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No people yet.</div>';
+  else if(!f.length)l.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px">No matches.</div>';
+  else l.innerHTML=f.map(p=>'<div class="person-item '+(p.id===currentPersonId?'active':'')+'" onclick="viewPerson(\''+p.id+'\')"><div class="person-item-name">'+esc(p.name||'Unknown')+'</div><div class="person-item-meta">'+(p.specialty?esc(p.specialty):'')+(p.email?' &middot; '+esc(p.email):'')+'</div></div>').join('');
+  document.getElementById('peopleCount').textContent=people.length+' '+(people.length===1?'person':'people');
+}
+
+function viewPerson(id){
+  const p=people.find(x=>x.id===id);if(!p)return;
+  currentPersonId=id;
+  document.getElementById('personViewHeader').textContent=p.name||'Unknown';
+  let html='<div class="person-detail-name">'+esc(p.name||'Unknown')+'</div>';
+  html+='<div class="person-field"><span class="pf-label">Specialty</span><span class="pf-value">'+(p.specialty?esc(p.specialty):'<span style="color:var(--text-dim)">Not set</span>')+'</span></div>';
+  html+='<div class="person-field"><span class="pf-label">Phone</span><span class="pf-value">'+(p.phone?esc(p.phone):'<span style="color:var(--text-dim)">Not set</span>')+'</span></div>';
+  html+='<div class="person-field"><span class="pf-label">Email</span><span class="pf-value">'+(p.email?esc(p.email):'<span style="color:var(--text-dim)">Not set</span>')+'</span></div>';
+  if(p.notes)html+='<div class="person-field"><span class="pf-label">Notes</span><span class="pf-value">'+esc(p.notes)+'</span></div>';
+  // Link to CV if exists
+  if(p.cvId){
+    const cv=cvs.find(c=>c.id===p.cvId);
+    if(cv)html+='<div class="person-cv-link" onclick="switchStudio(\'cv\');viewCV(\''+cv.id+'\')">&#128196; View linked CV: '+esc(cv.name||cv.source)+'</div>';
+  }
+  html+='<div style="margin-top:12px;font-size:11px;color:var(--text-dim)">Added: '+new Date(p.created).toLocaleDateString()+'</div>';
+  document.getElementById('personViewContent').innerHTML=html;
+  showPeopleView('personViewDetail');renderPeopleList();
+}
+
+function deletePerson(){if(!confirm('Delete this person?'))return;people=people.filter(p=>p.id!==currentPersonId);currentPersonId=null;savePeople();people.length>0?viewPerson(people[0].id):showPeopleView('peopleEmptyState')}
+
+function showPeopleExport(){
+  const t=people.map(p=>{let o=p.name||'Unknown';if(p.specialty)o+=' | '+p.specialty;if(p.phone)o+=' | '+p.phone;if(p.email)o+=' | '+p.email;if(p.notes)o+='\n  Notes: '+p.notes;return o}).join('\n');
+  document.getElementById('peopleExportArea').value=t;showPeopleView('peopleExportView');
+}
+function copyPeopleExport(){navigator.clipboard.writeText(document.getElementById('peopleExportArea').value).then(()=>toast('People list copied!'))}
 
 /* ===== UTILS ===== */
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 function toast(m){const e=document.getElementById('copyToast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
-document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='n'){e.preventDefault();showPasteNew()}if(e.key==='Escape')cancelForm()});
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='n'){e.preventDefault();if(currentStudio==='pitch')showPasteNew();else if(currentStudio==='cv')showCVUpload()}if(e.key==='Escape')cancelForm()});
 
 /* ===== INIT ===== */
 load();
+retitleAll(); // Auto-rename any pitches missing proper titles
 </script>
 </body>
 </html>
