@@ -800,26 +800,120 @@ function renderParsedPreview(){
 }
 
 /* ===== AUTO TITLE GENERATOR ===== */
+/* ===== SPECIALTY & TITLE KNOWLEDGE BASE ===== */
+const KNOWN_SPECIALTIES=[
+  // --- MEDICAL: Primary Care ---
+  'Family Medicine','Internal Medicine','General Practice','Pediatrics','Geriatrics','Adolescent Medicine','Hospitalist','Primary Care',
+  // --- MEDICAL: Surgical Specialties ---
+  'General Surgery','Orthopedic Surgery','Orthopedics','Cardiothoracic Surgery','Neurosurgery','Plastic Surgery','Vascular Surgery','Pediatric Surgery','Trauma Surgery','Colorectal Surgery','Transplant Surgery','Bariatric Surgery','Hand Surgery','Surgical Oncology',
+  // --- MEDICAL: Internal Medicine Subspecialties ---
+  'Cardiology','Interventional Cardiology','Electrophysiology','Gastroenterology','Hepatology','Pulmonology','Critical Care','Pulmonary Critical Care','Nephrology','Endocrinology','Rheumatology','Hematology','Oncology','Hematology/Oncology','Medical Oncology','Radiation Oncology','Infectious Disease','Allergy','Immunology','Allergy & Immunology',
+  // --- MEDICAL: Other Specialties ---
+  'Emergency Medicine','Urgent Care','Anesthesiology','Pain Management','Radiology','Interventional Radiology','Diagnostic Radiology','Pathology','Dermatology','Ophthalmology','Otolaryngology','ENT','Urology','Neurology','Psychiatry','Child Psychiatry','Addiction Medicine','Physical Medicine','Rehabilitation','PM&R','Obstetrics','Gynecology','OB/GYN','OBGYN','Maternal Fetal Medicine','Reproductive Endocrinology','Neonatology','Nuclear Medicine','Sports Medicine','Sleep Medicine','Palliative Care','Hospice',
+  // --- MEDICAL: Dental ---
+  'Dentistry','Oral Surgery','Orthodontics','Periodontics','Endodontics','Prosthodontics','Pediatric Dentistry',
+  // --- MEDICAL: Other Clinical ---
+  'Nursing','Registered Nurse','RN','Nurse Practitioner','NP','Physician Assistant','PA','PA-C','Licensed Practical Nurse','LPN','Certified Nursing Assistant','CNA','Physical Therapy','Occupational Therapy','Speech Therapy','Respiratory Therapy','Pharmacy','Pharmacist','Clinical Psychology','Social Work','Medical Assistant','Surgical Tech','Phlebotomy','Radiology Tech','MRI Tech','CT Tech','Ultrasound','Sonographer','EKG Tech','Dietitian','Nutritionist',
+  // --- MEDICAL: Administration ---
+  'Healthcare Administration','Health Information','Medical Coding','Medical Billing','Practice Management','Clinical Research','Biostatistics','Epidemiology','Public Health',
+  // --- BUSINESS & FINANCE ---
+  'Accounting','Public Accounting','Corporate Accounting','Tax','Audit','Financial Planning','Financial Analysis','Investment Banking','Private Equity','Venture Capital','Asset Management','Wealth Management','Commercial Banking','Retail Banking','Mortgage','Treasury','Risk Management','Compliance','Insurance','Actuarial','Underwriting','Claims',
+  // --- TECHNOLOGY ---
+  'Software Engineering','Software Development','Frontend','Backend','Full Stack','DevOps','Cloud Engineering','Data Engineering','Data Science','Machine Learning','Artificial Intelligence','AI/ML','Cybersecurity','Information Security','Network Engineering','Systems Administration','Database Administration','QA','Quality Assurance','Product Management','UX Design','UI Design','UX/UI','Technical Writing','IT Support','Help Desk','Infrastructure','Site Reliability',
+  // --- LEGAL ---
+  'Legal','Corporate Law','Litigation','Real Estate Law','Intellectual Property','Patent','Employment Law','Immigration Law','Tax Law','Bankruptcy','Environmental Law','Healthcare Law','Securities','Compliance','Paralegal','Legal Assistant',
+  // --- ENGINEERING (Non-Software) ---
+  'Mechanical Engineering','Electrical Engineering','Civil Engineering','Chemical Engineering','Biomedical Engineering','Environmental Engineering','Industrial Engineering','Structural Engineering','Aerospace Engineering','Manufacturing Engineering','Process Engineering','Controls Engineering','Automation',
+  // --- MARKETING & CREATIVE ---
+  'Marketing','Digital Marketing','Content Marketing','SEO','SEM','Social Media','Brand Management','Public Relations','Communications','Advertising','Creative','Graphic Design','Web Design','Video Production','Copywriting','Content Strategy',
+  // --- HUMAN RESOURCES ---
+  'Human Resources','HR','Talent Acquisition','Recruiting','Staffing','Benefits','Compensation','Payroll','Employee Relations','Learning & Development','Training','Organizational Development','HRIS',
+  // --- OPERATIONS & SUPPLY CHAIN ---
+  'Operations','Supply Chain','Logistics','Procurement','Purchasing','Warehouse','Distribution','Fleet Management','Inventory','Import/Export','Trade Compliance',
+  // --- SALES ---
+  'Sales','Business Development','Account Management','Inside Sales','Outside Sales','Enterprise Sales','SaaS Sales','Channel Sales','Sales Engineering','Pre-Sales',
+  // --- ADMINISTRATIVE ---
+  'Administrative','Executive Assistant','Office Manager','Receptionist','Data Entry','Customer Service','Call Center',
+  // --- CONSTRUCTION & TRADES ---
+  'Construction','Project Management','Estimating','Superintendent','Foreman','HVAC','Electrical','Plumbing','Carpentry','Welding','Architecture',
+  // --- EDUCATION ---
+  'Education','Teaching','Special Education','Curriculum','School Administration','Higher Education','Academic',
+  // --- OTHER ---
+  'Retail','Hospitality','Food Service','Property Management','Real Estate','Facilities','Environmental','Safety','Quality Control','Research','Biotechnology','Pharmaceutical','Life Sciences','Nonprofit','Government','Military','Transportation','Aviation'
+];
+
+const KNOWN_TITLES=[
+  // --- MEDICAL TITLES ---
+  'Physician','Doctor','Surgeon','Anesthesiologist','Radiologist','Pathologist','Psychiatrist','Dermatologist','Ophthalmologist','Urologist','Neurologist','Cardiologist','Oncologist','Gastroenterologist','Pulmonologist','Nephrologist','Endocrinologist','Rheumatologist','Hospitalist','Intensivist','Neonatologist','Allergist','Immunologist','Hematologist',
+  'Medical Director','Chief Medical Officer','CMO','Department Chair','Attending Physician','Fellow','Resident','Chief Resident',
+  'Nurse Practitioner','Physician Assistant','Registered Nurse','Charge Nurse','Nurse Manager','Director of Nursing','DON','CNO','Chief Nursing Officer',
+  'Pharmacist','Clinical Pharmacist','Pharmacy Director','Physical Therapist','Occupational Therapist','Speech Language Pathologist','Respiratory Therapist','Dietitian',
+  'Practice Manager','Office Manager','Medical Biller','Medical Coder','Health Information Manager','Clinical Research Coordinator',
+  // --- BUSINESS TITLES ---
+  'CEO','CFO','COO','CTO','CIO','CISO','CMO','CPO','CRO','CHRO','VP','SVP','EVP','AVP',
+  'Director','Senior Director','Managing Director','Associate Director','Assistant Director',
+  'Manager','Senior Manager','Associate Manager','Assistant Manager','General Manager',
+  'Analyst','Senior Analyst','Staff Analyst','Financial Analyst','Business Analyst','Data Analyst','Research Analyst','Credit Analyst','Investment Analyst',
+  'Associate','Senior Associate','Staff','Principal','Partner','Counsel','Paralegal',
+  'Coordinator','Specialist','Administrator','Supervisor','Lead','Team Lead',
+  'Engineer','Senior Engineer','Staff Engineer','Principal Engineer','Lead Engineer','Architect','Senior Architect',
+  'Developer','Senior Developer','Lead Developer','Full Stack Developer','Frontend Developer','Backend Developer',
+  'Designer','Senior Designer','Lead Designer','Creative Director','Art Director',
+  'Consultant','Senior Consultant','Managing Consultant','Advisory',
+  'Recruiter','Senior Recruiter','Recruiting Manager','Talent Acquisition Specialist','Sourcer',
+  'Accountant','Senior Accountant','Staff Accountant','Controller','Assistant Controller','Bookkeeper','Auditor','Tax Manager','Tax Director',
+  'Attorney','Lawyer','Associate Attorney','Of Counsel','Legal Assistant',
+  'Sales Representative','Account Executive','Account Manager','Business Development Representative','BDR','SDR','Sales Manager','Sales Director',
+  'Project Manager','Program Manager','Product Manager','Scrum Master','Agile Coach',
+  'Executive Assistant','Administrative Assistant','Office Coordinator','Receptionist'
+];
+
+// Build regex from knowledge base (sorted longest-first to match most specific)
+const _specRegex=new RegExp('\\b('+KNOWN_SPECIALTIES.sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')).join('|')+')\\b','i');
+const _titleRegex=new RegExp('\\b((?:Senior|Junior|Lead|Staff|Principal|Chief|Head|Associate|Assistant|Executive|Managing|Director of|VP of|SVP of|Manager of)?\\s*(?:'+KNOWN_TITLES.sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')).join('|')+'))\\b','i');
+
+function detectSpecialty(text){
+  const m=text.match(_specRegex);
+  return m?m[1]:'';
+}
+function detectTitle(text){
+  const m=text.match(_titleRegex);
+  return m?m[1].trim():'';
+}
+
+/* ===== AUTO TITLE GENERATOR ===== */
 function generatePitchTitle(role,company,parsed){
   const now=new Date();
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dateStr=months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
   const text=(parsed?(parsed.subject||'')+' '+(parsed.body||''):'');
-  let specialty='';
-  const specPatterns=[
-    /(?:speciali[sz](?:e|ing|ation)|focus(?:ed|ing)?|field|area|practice|division|department|team|group)[\s:]+(?:in\s+)?([A-Za-z\/&\s]+?)(?:[,.\n]|$)/i,
-    /(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Administrative|Clerical|Creative|Design|Operations|Supply Chain|Logistics|Manufacturing|Pharmaceutical|Life Sciences|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Retail|Hospitality)/i
-  ];
-  const specMatch1=text.match(specPatterns[0]);
-  if(specMatch1)specialty=specMatch1[1].trim();
-  if(!specialty){const specMatch2=text.match(specPatterns[1]);if(specMatch2)specialty=specMatch2[0].trim()}
-  if(!specialty&&role){const rw=role.split(/\s+/);specialty=rw.length<=4?role:rw.slice(0,3).join(' ')}
-  if(specialty&&specialty.length>30)specialty=specialty.substring(0,27)+'...';
+
+  // 1. Try to detect specialty from knowledge base
+  let specialty=detectSpecialty(text);
+
+  // 2. If no specialty, try to detect a known title
+  if(!specialty){
+    const title=detectTitle(text);
+    if(title)specialty=title;
+  }
+
+  // 3. Fallback: use role parameter if provided
+  if(!specialty&&role){
+    // Check if role itself matches a known title or specialty
+    const roleSpec=detectSpecialty(role)||detectTitle(role);
+    if(roleSpec)specialty=roleSpec;
+    else{const rw=role.split(/\s+/);specialty=rw.length<=4?role:rw.slice(0,3).join(' ')}
+  }
+
+  // 4. Cap length
+  if(specialty&&specialty.length>35)specialty=specialty.substring(0,32)+'...';
+
+  // Detect locations
   const locPattern=/\b([A-Z][a-zA-Z\s.]+),\s*([A-Z]{2})\b/g;
   const locations=[];let locMatch;
   while((locMatch=locPattern.exec(text))!==null){
     const city=locMatch[1].trim(),st=locMatch[2];
-    if(city.length>1&&city.length<30&&!/^(Subject|From|To|Date|Re|Fwd)$/i.test(city)){
+    if(city.length>1&&city.length<30&&!/^(Subject|From|To|Date|Re|Fwd|Dear|Best|Thanks|Hello|Regards)$/i.test(city)){
       const key=city+', '+st;
       if(!locations.find(l=>l.key===key))locations.push({city,state:st,key})
     }
@@ -827,14 +921,17 @@ function generatePitchTitle(role,company,parsed){
   let locationStr='';
   if(locations.length===1)locationStr=locations[0].city+', '+locations[0].state;
   else if(locations.length>1){const states=[...new Set(locations.map(l=>l.state))];locationStr='(Multiple Locations), '+states.join('/')}
+
+  // Build title
   let parts=[];
   if(specialty)parts.push(specialty);
   if(locationStr)parts.push(locationStr);
   parts.push(dateStr);
-  // If no specialty or location found, use first meaningful line as identifier
+
+  // If still nothing useful, use subject line or first meaningful line (min 8 chars to avoid junk)
   if(!specialty&&!locationStr&&parsed){
-    const firstLine=(parsed.subject||parsed.greeting||parsed.body||'').split('\n')[0].trim();
-    if(firstLine&&firstLine.length>3){
+    const firstLine=(parsed.subject||'').trim();
+    if(firstLine&&firstLine.length>=8){
       const snippet=firstLine.length>40?firstLine.substring(0,37)+'...':firstLine;
       parts.unshift(snippet);
     }
@@ -844,10 +941,15 @@ function generatePitchTitle(role,company,parsed){
 
 function extractRoleCompany(text){
   let role='',company='';
-  const roleMatch=text.match(/(?:role|position|opportunity)[\s:]*(?:for\s+(?:a|an)\s+)?([A-Z][A-Za-z\s\/]+(?:Engineer|Developer|Manager|Designer|Analyst|Director|Lead|Architect|Consultant|Specialist|Coordinator|Associate|VP|Recruiter))/i);
-  if(roleMatch)role=roleMatch[1].trim();
-  const compMatch=text.match(/(?:at|with|for|join)\s+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n]|$)/);
-  if(compMatch&&compMatch[1].trim().length<60)company=compMatch[1].trim();
+  // Use knowledge base for role detection
+  const titleMatch=detectTitle(text);
+  if(titleMatch)role=titleMatch;
+  if(!role){
+    const roleMatch=text.match(/(?:role|position|opportunity|looking for|seeking|hiring)[\s:]*(?:a|an)?\s*([A-Z][A-Za-z\s\/&]+?)(?:\s*[,.\n(]|$)/i);
+    if(roleMatch&&roleMatch[1].trim().length<60)role=roleMatch[1].trim();
+  }
+  const compMatch=text.match(/(?:at|with|for|join|company|client|employer)[\s:]+([A-Z][A-Za-z0-9\s&.]+?)(?:\s*[,!.\-\n(]|$)/);
+  if(compMatch&&compMatch[1].trim().length<60&&compMatch[1].trim().length>1)company=compMatch[1].trim();
   return{role,company};
 }
 
@@ -1072,8 +1174,7 @@ function analyzeJD(){
   jdData.company=compMatch?compMatch[1].trim():'';
   const locMatch=raw.match(/(?:location|based\s+in|office)[\s:]+([^\n]+)/i);
   jdData.location=locMatch?locMatch[1].trim():'';
-  const specMatch=raw.match(/(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Pharmaceutical|Life Sciences)/i);
-  jdData.specialty=specMatch?specMatch[0]:'';
+  jdData.specialty=detectSpecialty(raw)||'';
 
   // Build questions UI
   let qhtml='';
@@ -1230,9 +1331,8 @@ function extractContactFromCV(text,fallbackName){
   // Phone (various formats)
   const phoneMatch=text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
   if(phoneMatch)info.phone=phoneMatch[0].trim();
-  // Specialty detection
-  const specMatch=text.match(/(?:IT|Accounting|Finance|Healthcare|Nursing|Engineering|Legal|Marketing|Sales|HR|Human Resources|Administrative|Creative|Design|Operations|Supply Chain|Logistics|Manufacturing|Pharmaceutical|Life Sciences|Technology|Data|Analytics|Cybersecurity|Insurance|Banking|Real Estate|Construction|Education|Retail|Hospitality)/i);
-  if(specMatch)info.specialty=specMatch[0];
+  // Specialty detection (uses knowledge base)
+  info.specialty=detectSpecialty(text)||detectTitle(text)||'';
   return info;
 }
 
