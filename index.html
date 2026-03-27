@@ -215,6 +215,15 @@ textarea{resize:vertical;min-height:120px;line-height:1.6}textarea.large{min-hei
     Submit
   </button>
   <div class="nav-spacer"></div>
+  <button class="nav-btn" onclick="exportBackup()" title="Download Backup">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Backup
+  </button>
+  <button class="nav-btn" onclick="document.getElementById('restoreInput').click()" title="Restore Backup" style="position:relative">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Restore
+    <input type="file" id="restoreInput" accept=".json" onchange="importBackup(event)" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer">
+  </button>
 </nav>
 
 <!-- ==================== PITCH STUDIO ==================== -->
@@ -1460,6 +1469,33 @@ function copySubExport(){navigator.clipboard.writeText(document.getElementById('
 /* Submission drag & drop */
 const subDz=document.getElementById('subDropZone');
 if(subDz){subDz.addEventListener('dragover',e=>{e.preventDefault();subDz.classList.add('dragover')});subDz.addEventListener('dragleave',()=>subDz.classList.remove('dragover'));subDz.addEventListener('drop',e=>{e.preventDefault();subDz.classList.remove('dragover');const input=document.getElementById('subFileInput');const dt=new DataTransfer();Array.from(e.dataTransfer.files).forEach(f=>dt.items.add(f));input.files=dt.files;handleSubUpload({target:input})})}
+
+/* ===== BACKUP / RESTORE ===== */
+function exportBackup(){
+  const data={pitches,cvs,people,submissions,exported:new Date().toISOString(),version:'1.0'};
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='zcruit-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Backup downloaded!');
+}
+function importBackup(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.pitches)pitches=data.pitches;
+      if(data.cvs)cvs=data.cvs;
+      if(data.people)people=data.people;
+      if(data.submissions)submissions=data.submissions;
+      save();saveCVs();savePeople();saveSubs();
+      toast('Backup restored! '+pitches.length+' pitches, '+cvs.length+' CVs, '+people.length+' people, '+submissions.length+' submissions');
+    }catch(err){alert('Invalid backup file.')}
+  };reader.readAsText(file);
+  event.target.value='';
+}
 
 /* ===== UTILS ===== */
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
